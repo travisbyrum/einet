@@ -1,0 +1,17 @@
+Package: einet
+Type: Package
+Title: Effective Information and Causal Emergence
+Version: 0.1.0
+Author: Travis Byrum
+Maintainer: Travis Byrum <tbyrum@terpmail.umd.com>
+Description: Methods and utilites for calculating...
+    Use four spaces when indenting paragraphs within the Description.
+License: MIT + file LICENSE
+Encoding: UTF-8
+LazyData: true
+Imports:
+    assertthat,
+    igraph,
+    magrittr
+Suggests: 
+    testthat
