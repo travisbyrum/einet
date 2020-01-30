@@ -2,10 +2,17 @@
 effective_information <- function(x, ...) UseMethod("effective_information")
 
 #' @export
-effective_information.matrix <- function(x = 0) {
+effective_information.matrix <- function(x) {
   assertthat::assert_that(is.matrix(x))
 
   graph <- igraph::graph.adjacency(x,  mode = "directed")
+
+  effective_information.igraph(graph)
+}
+
+#' @export
+effective_information.igraph <- function(graph) {
+  assertthat::assert_that(igraph::is.igraph(graph))
   nodes <- igraph::V(graph)
   out_edges <- igraph::incident_edges(graph, igraph::V(graph), mode = "out")
 
@@ -41,3 +48,4 @@ effective_information.matrix <- function(x = 0) {
 
   win_entropy - w_out_average
 }
+
