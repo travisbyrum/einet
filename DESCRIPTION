@@ -12,6 +12,7 @@ LazyData: true
 Imports:
     assertthat,
     igraph,
-    magrittr
-Suggests: 
+    magrittr,
+    shiny
+Suggests:
     testthat
