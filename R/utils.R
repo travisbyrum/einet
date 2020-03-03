@@ -5,7 +5,7 @@
 magrittr::`%>%`
 
 ### default pipe ------------------------------------------------------------------------
-`%||%` <- function(a, b) if (is.null(a)) b else a
+`%||%` <- function(a, b) if (is.null(a) || is.na(a)) b else a
 
 ### is truthy ---------------------------------------------------------------------------
 is_truthy <- function(x) {
@@ -17,3 +17,4 @@ is_truthy <- function(x) {
     !identical(nchar(x), 0L) &&
     !identical(x, FALSE)
 }
+
