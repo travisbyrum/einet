@@ -447,6 +447,8 @@ causal_emergence.igraph <- function(graph,
 
   checked_macros <- c()
   macro_types <- list()
+  macro_types_tmp <- macro_types
+
   current_mapping <- lapply(
     seq_along(nodes_left),
     function(i) {
@@ -475,28 +477,26 @@ causal_emergence.igraph <- function(graph,
       current_mapping[[node_i]]
     )
 
-    has_compare <- TRUE
-
     iteration <- 0
-    while (has_compare) {
+    while (length(queue) > 0) {
       iteration <- iteration + 1
 
-      shuffled_m <- macros_to_check[sample(seq_along(macros_to_check))]
+      queue <- queue[sample(seq_along(queue))]
 
-      possible_macro <- tail(shuffled_m, 1) %>%
+      possible_macro <- head(queue, 1) %>%
         as.numeric
+
+      queue <- tail(queue, -1)
 
       possible_mapping <- current_mapping
       possible_mapping[[possible_macro]]$macro <- node_i_macro
       possible_mapping[[node_i]]$macro <- node_i_macro
 
-      queue <<- queue[1:(length(queue) - 1)]
-
       if (types) {
 
       } else {
-        macro_types[[node_i_macro]] <- "spatem1"
-        graph_macro = create_macro(graph, possible_mapping, macro_types)
+        macro_types_tmp[[node_i_macro]] <- "spatem1"
+        graph_macro <- create_macro(graph, possible_mapping, macro_types)
       }
 
       ei_macro = effective_information(graph_macro)
@@ -506,9 +506,29 @@ causal_emergence.igraph <- function(graph,
       }
 
       if ((ei_macro - ei_current) > thresh) {
+        ei_current <- ei_macro
 
+        macro_mapping <- possible_mapping
+        macro_types <- macro_types_tmp
+
+        checked_macros <- checked_macros %>%
+          append(c(as.numeric(node_i), possible_mapping))
+
+        nodes_in_macro_i <-  macro_mapping %>%
+          Filter(function(v) v$macro == node_i_macro, .) %>%
+          sapply(function(v) v$node)
+
+        for (new_micro_i in seq_along(nodes_in_macro_i)) {
+          neighbors_i_M <- mb(graph, new_micro_i)[[1]] %>%
+            as.numeric
+
+          for (node_j_M in neighbors_i_M) {
+            if (!(node_j_M %in% queue) && node_j_M != node_i) {
+              queue <- append(queue, node_j_M)
+            }
+          }
+        }
       }
-
 
       if (iteration > max_iterations) {
         break
@@ -518,15 +538,13 @@ causal_emergence.igraph <- function(graph,
 
   structure(
     list(
-      graph       = graph,
+      g_micro     = graph,
       macro_types = macro_types,
-      ei          = ei_current
+      g_macro     = create_macro(graph, current_mapping, macro_types),
+      mapping     = current_mapping,
+      ei_macro    = ei_current,
+      ei_micro    = ei_micro
     ),
     class = "CE"
   )
-
-  shuffle
 }
-
-# causal_emergence(graph, span = 2)
-# causal_emergence(list(graph))
