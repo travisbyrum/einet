@@ -37,3 +37,20 @@ test_that("Causal Emergence is calculated correctly", {
  expect_true(length(ce) > 0)
 })
 
+### Testing Causal Emergence --------------------------------------------
+test_that("Causal Emergence is calculated with and_and", {
+  and_and <- matrix(
+    rbind(
+      c(1.0, 0.0, 0.0, 0.0),
+      c(1.0, 0.0, 0.0, 0.0),
+      c(1.0, 0.0, 0.0, 0.0),
+      c(0.0, 0.0, 0.0, 1.0)
+    ),
+    nrow = 4
+  )
+
+  ce <- causal_emergence(and_and)
+
+  expect_true(length(ce) > 0)
+})
+

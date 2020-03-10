@@ -265,7 +265,7 @@ create_macro <- function(graph, mapping, macro_types, ...) {
         W_i_out_final[final_node_i] <- selfloop
         TOO_BIG_MACRO[final_node_i, ] <- W_i_out_final
       }
-    }else if (final_node_i_type == 'spatem2') {
+    } else if (final_node_i_type == 'spatem2') {
       mu_mu_index <- macro_mumu_pairings[[final_node_i]]
       W_mu_out_final <- rep(0, n_TOO_BIG_MACRO)
 
@@ -386,6 +386,7 @@ stationary <- function(graph, zero_cutoff = 1e-10) {
 
   P <- lm(B ~ 0 + A)$coefficients
   P[P < zero_cutoff] <- 0
+  P[is.na(P)] <- 0
 
   if (sum(P) != 0 && sum(P) != 1) {
     P <- P / sum(P)
@@ -406,6 +407,15 @@ update_blanket <- function(blanket, removal = NULL) {
 #'
 #' @export
 causal_emergence <- function(x, ...) UseMethod("causal_emergence")
+
+#' @export
+causal_emergence.matrix <- function(x, ...) {
+  assertthat::assert_that(is.matrix(x))
+
+  graph <- igraph::graph.adjacency(x,  mode = "directed")
+
+  causal_emergence.igraph(graph, ...)
+}
 
 #' @export
 causal_emergence.list <- function(graphs, ...) {

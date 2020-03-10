@@ -96,5 +96,5 @@ effective_information.igraph <- function(graph, normalized = FALSE) {
     )
   }
 
-  return(win_entropy - w_out_average)
+  win_entropy - w_out_average
 }
