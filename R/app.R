@@ -1,9 +1,10 @@
 #' @export
 run_example <- function() {
-  appDir <- system.file("app", package = "einet")
-  if (appDir == "") {
-    stop("Could not find myapp. Try re-installing `mypackage`.", call. = FALSE)
+  app_dir <- system.file("app", package = "einet")
+
+  if (app_dir == "") {
+    stop("Could not find shiny app. Try re-installing `einet`.", call. = FALSE)
   }
 
-  shiny::runApp(appDir, display.mode = "normal")
+  shiny::runApp(app_dir, display.mode = "normal")
 }
