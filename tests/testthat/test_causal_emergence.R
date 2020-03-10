@@ -2,7 +2,7 @@ context("Testing Causal Emergence")
 
 ### Testing Markov Blanket ---------------------------------------------
 test_that("Markov Blanket is calculated correctly", {
-  adjacency_matrix <- matrix(
+  graph <- matrix(
     cbind(
       c(0.0, 1.0, 0.0, 0.0),
       c(0.0, 0.0, 1.0, 0.0),
@@ -10,9 +10,8 @@ test_that("Markov Blanket is calculated correctly", {
       c(0.0, 0.0, 0.0, 0.0)
     ),
     nrow = 4
-  )
-
-  graph <- igraph::graph.adjacency(adjacency_matrix,  mode = "directed")
+  ) %>%
+    igraph::graph.adjacency(mode = "directed")
 
   blanket <- mb(graph, 2)
 

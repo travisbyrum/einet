@@ -360,24 +360,25 @@ create_macro <- function(graph, mapping, macro_types, ...) {
   TOO_BIG_MACRO[nodes_in_macro_network, ][, nodes_in_macro_network]
 }
 
-  #' Outgoing edges
-  out_edges <- function(graph) {
-    igraph::incident_edges(graph, igraph::V(graph), mode = "out") %>%
-      sapply(function(v) {
-        if (length(v) > 0) {
-          return(igraph::tail_of(graph, v[[1]]))
-        }
-      }) %>%
-      Filter(Negate(is.null), .) %>%
-      as.numeric
-  }
+#' Outgoing edges
+out_edges <- function(graph) {
+  igraph::incident_edges(graph, igraph::V(graph), mode = "out") %>%
+    sapply(function(v) {
+      if (length(v) > 0) {
+        return(igraph::tail_of(graph, v[[1]]))
+      }
+    }) %>%
+    Filter(Negate(is.null), .) %>%
+    as.numeric
+}
 
-  #'  Stationary Distribution
-  stationary <- function(graph, zero_cutoff = 1e-10) {
-    A <- igraph::as_adjacency_matrix(graph) %>%
-      as.matrix
+#'  Stationary Distribution
+stationary <- function(graph, zero_cutoff = 1e-10) {
+  A <- igraph::as_adjacency_matrix(graph) %>%
+    as.matrix
 
   rows <- NROW(A)
+
   I <- diag(nrow = rows)
 
   A <- rbind(I - A, rep(1, rows))
