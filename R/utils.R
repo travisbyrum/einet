@@ -18,3 +18,17 @@ is_truthy <- function(x) {
     !identical(x, FALSE)
 }
 
+### keys --------------------------------------------------------------------------------
+keys <- function(x) {
+  assertthat::assert_that(is.list(x), msg = 'list not provided')
+
+  sapply(x, function(v) v$key)
+}
+
+### values ------------------------------------------------------------------------------
+values <- function(x, key = 'value') {
+  assertthat::assert_that(is.list(x), msg = 'list not provided')
+
+  sapply(x, function(v) v[[key]])
+}
+

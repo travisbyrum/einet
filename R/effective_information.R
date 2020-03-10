@@ -16,11 +16,17 @@ effective_information.igraph <- function(graph, normalized = FALSE) {
   nodes <- igraph::V(graph)
   out_edges <- igraph::incident_edges(graph, igraph::V(graph), mode = "out")
 
+  non_zero <- Filter(function(oe) length(oe) > 0, out_edges) %>%
+    sapply(function(a) ifelse(length(a) > 1, a[1], a))
+
+  weight_value <- 1 / length(out_edges)
+
   graph <- graph %>%
     igraph::set_edge_attr("weight", igraph::E(.), 0) %>%
     igraph::set_edge_attr(
       "weight",
-      Filter(function(oe) length(oe) > 0, out_edges), 1 / length(out_edges)
+      index = non_zero,
+      value = weight_value
     )
 
   # TODO CHECK IF HAS WEIGHTS
