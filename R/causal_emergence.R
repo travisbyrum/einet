@@ -453,7 +453,7 @@ causal_emergence.igraph <- function(graph,
   shuffle <-  sample(seq_along(nodes_left), size = span)
 
   ei_micro <- effective_information.igraph(graph)
-  eff_micro <- effective_information.igraph(graph, normalized = TRUE)
+  eff_micro <- effective_information.igraph(graph, effectiveness = TRUE)
 
   ei_current <- ei_micro
   eff_current <- eff_micro
@@ -513,7 +513,7 @@ causal_emergence.igraph <- function(graph,
       }
 
       ei_macro = effective_information(graph_macro)
-      eff_macro <- effective_information.igraph(graph, normalized = TRUE)
+      eff_macro <- effective_information.igraph(graph, effectiveness = TRUE)
 
       if (is.infinite(ei_macro)) {
         return(graph_macro)

@@ -11,7 +11,7 @@ effective_information.matrix <- function(x, ...) {
 }
 
 #' @export
-effective_information.igraph <- function(graph, normalized = FALSE) {
+effective_information.igraph <- function(graph, effectiveness = FALSE) {
   assertthat::assert_that(igraph::is.igraph(graph))
 
   nodes <- igraph::V(graph)
@@ -90,7 +90,7 @@ effective_information.igraph <- function(graph, normalized = FALSE) {
   w_out_average <- sum(w_out) / n_out
   win_entropy <- entropy::entropy(w_in, unit = "log2")
 
-  if (normalized) {
+  if (effectiveness) {
     return(
       (win_entropy - w_out_average) / log2(length(nodes))
     )

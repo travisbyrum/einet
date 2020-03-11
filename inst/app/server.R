@@ -1,3 +1,5 @@
+options(shiny.maxRequestSize = 100*1024^2)
+
 copy_copy <- matrix(
   rbind(
     c(1.0, 0.0, 0.0, 0.0),
