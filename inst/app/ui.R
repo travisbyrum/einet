@@ -21,14 +21,15 @@ ui <- fluidPage(
         "Graph File Type",
         choices = c(
           EdgeList = "edgelist",
-          GraphML = "graphml"
+          GraphML  = "graphml"
         ),
-        selected = "adj"
+        selected = "graphml"
       ),
       selectInput(
-        inputId = "graph",
-        label = "Choose example dataset",
-        choices = c("copy_copy", "and_and", "or_or")
+        inputId  = "graph",
+        label    = "Choose example dataset",
+        selected = "copy_copy",
+        choices  = c("copy_copy", "and_and", "or_or")
       ),
     ),
 

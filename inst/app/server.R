@@ -52,8 +52,7 @@ server <- function(input, output) {
   })
 
   output$graph <- renderPlot({
-    graph <- dataset() %>%
-      igraph::graph.adjacency(mode = "directed")
+    graph <- dataset()
 
     plot(graph)
   })
@@ -62,16 +61,13 @@ server <- function(input, output) {
     ei <- dataset() %>%
       effective_information
 
-    ce <- dataset() %>%
-      causal_emergence
-
     sprintf('Effective Information: %.2f\n', ei)
   })
 
   output$ce <- renderText({
-    ce <- dataset() %>%
-      causal_emergence
+    # ce <- dataset() %>%
+    #   causal_emergence
 
-    sprintf('Causal Emergence EI Micro: %.2f\n', ce$ei_micro)
+    # sprintf('Causal Emergence EI Micro: %.2f\n', ce$ei_micro)
   })
 }
