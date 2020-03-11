@@ -453,7 +453,10 @@ causal_emergence.igraph <- function(graph,
   shuffle <-  sample(seq_along(nodes_left), size = span)
 
   ei_micro <- effective_information.igraph(graph)
+  eff_micro <- effective_information.igraph(graph, normalized = TRUE)
+
   ei_current <- ei_micro
+  eff_current <- eff_micro
 
   checked_macros <- c()
   macro_types <- list()
@@ -510,6 +513,7 @@ causal_emergence.igraph <- function(graph,
       }
 
       ei_macro = effective_information(graph_macro)
+      eff_macro <- effective_information.igraph(graph, normalized = TRUE)
 
       if (is.infinite(ei_macro)) {
         return(graph_macro)
@@ -517,6 +521,7 @@ causal_emergence.igraph <- function(graph,
 
       if ((ei_macro - ei_current) > thresh) {
         ei_current <- ei_macro
+        eff_current <- eff_macro
 
         macro_mapping <- possible_mapping
         macro_types <- macro_types_tmp
@@ -553,7 +558,8 @@ causal_emergence.igraph <- function(graph,
       g_macro     = create_macro(graph, current_mapping, macro_types),
       mapping     = current_mapping,
       ei_macro    = ei_current,
-      ei_micro    = ei_micro
+      ei_micro    = ei_micro,
+      ce          = eff_micro - eff_micro
     ),
     class = "CE"
   )
