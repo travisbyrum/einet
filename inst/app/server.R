@@ -1,4 +1,5 @@
 options(shiny.maxRequestSize = 100*1024^2)
+library(magrittr)
 
 copy_copy <- matrix(
   rbind(
@@ -51,10 +52,34 @@ server <- function(input, output) {
     }
   })
 
+  causal <- reactive({
+    dataset() %>%
+      causal_emergence
+  })
+
   output$graph <- renderPlot({
     graph <- dataset()
+    ce <- causal()
 
-    plot(graph)
+    if (is.matrix(graph)) {
+      graph <- igraph::graph.adjacency(graph, mode = "directed")
+    }
+
+    wc <- sapply(ce$mapping, function(m) m$macro) %>%
+      igraph::make_clusters(graph, .)
+
+    new_cols <- RColorBrewer::brewer.pal(n = wc$vcount, name = "RdBu")[igraph::membership(wc)]
+    par(mfrow=c(1,1))
+
+    plot(
+      wc,
+      graph,
+      col             = new_cols,
+      mark.border     ="black",
+      vertex.label    = NA,
+      vertex.size     = 9,
+      edge.arrow.size = .4
+    )
   })
 
   output$ei <- renderText({

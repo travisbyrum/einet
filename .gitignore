@@ -36,4 +36,7 @@ vignettes/*.pdf
 *.knit.md
 
 # R Environment Variables
-.RenvironÏ
+.Renviron
+
+# Rsconnect
+inst/app/rsconnect

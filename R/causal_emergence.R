@@ -8,7 +8,14 @@ mb <- function(graph, nodes) {
       node <- nodes[i]
       predecessors <- igraph::tail_of(graph, igraph::E(graph)[to(node)])
       children <- igraph::head_of(graph, igraph::E(graph)[from(node)])
-      unique(c(children, predecessors))
+      nodes_out <- c(children, predecessors)
+
+      for (node_j in children) {
+        nodes_out <- igraph::tail_of(graph, igraph::E(graph)[to(node_j)]) %>%
+          append(nodes_out)
+      }
+
+      unique(nodes_out)
     }
   )
 }
@@ -435,13 +442,21 @@ causal_emergence.igraph <- function(graph,
                                     ...) {
   assertthat::assert_that(igraph::is.igraph(graph))
 
+  graph <- graph %>%
+    igraph::set_edge_attr("weight", igraph::E(.), 0)
+
   out_edges <- igraph::incident_edges(graph, igraph::V(graph), mode = "out")
+  weight_edges <- numeric(0)
+
+  for (oe in Filter(function(oe) length(oe) > 0, out_edges)) {
+    weight_edges <- append(weight_edges, as.numeric(oe))
+  }
 
   graph <- graph %>%
-    igraph::set_edge_attr("weight", igraph::E(.), 0) %>%
     igraph::set_edge_attr(
       "weight",
-      Filter(function(oe) length(oe) > 0, out_edges), 1 / length(out_edges)
+      unique(weight_edges),
+      1 / length(out_edges)
     )
 
   # w_out <-out_edges(graph) why do we not have to take out edges
