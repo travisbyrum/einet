@@ -1,5 +1,8 @@
 options(shiny.maxRequestSize = 100*1024^2)
+
 library(magrittr)
+library(entropy)
+library(einet)
 
 copy_copy <- matrix(
   rbind(

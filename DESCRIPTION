@@ -13,7 +13,12 @@ Imports:
     assertthat,
     igraph,
     magrittr,
-    shiny
+    shiny,
+    entropy
 Suggests:
     testthat,
-    RColorBrewer
+    RColorBrewer,
+    knitr,
+    rmarkdown
+VignetteBuilder: knitr
+RoxygenNote: 7.0.2
