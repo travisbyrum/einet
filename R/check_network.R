@@ -1,18 +1,14 @@
 #' @export
 check_network <- function(graph) {
   graph <- graph %>%
-    igraph::simplify(remove.loops = FALSE)
+    igraph::simplify(remove.loops = FALSE) %>%
+    igraph::as.directed()
 
   nodes <- igraph::V(graph)
-
   out_edges <- igraph::incident_edges(graph, nodes, mode = "out")
 
   for (i in seq_along(out_edges)) {
     out_edges_i <- out_edges[[i]]
-
-    if (i == 2) {
-      temp = NULL
-    }
 
     graph_weights <- igraph::get.edge.attribute(graph, "weight", out_edges_i)
 
@@ -23,8 +19,6 @@ check_network <- function(graph) {
           index = out_edges_i,
           value = graph_weights / sum(graph_weights)
         )
-
-      print(sum(igraph::get.edge.attribute(graph, "weight", out_edges[[2]])))
     } else if (length(out_edges_i) > 0) {
       non_zero <- Filter(function(oe) length(oe) > 0, out_edges_i) %>%
         unlist %>%
