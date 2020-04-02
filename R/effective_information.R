@@ -14,34 +14,17 @@ effective_information.matrix <- function(x, ...) {
 effective_information.igraph <- function(graph, effectiveness = FALSE) {
   assertthat::assert_that(igraph::is.igraph(graph))
 
+  graph <- check_network(graph)
   nodes <- igraph::V(graph)
-  out_edges <- igraph::incident_edges(graph, igraph::V(graph), mode = "out")
+  out_edges <- igraph::incident_edges(graph, nodes, mode = "out")
 
   n_out <- out_edges %>%
     Filter(function(v) length(v) > 0, .) %>%
     length
 
-  out_edge_len <- out_edges %>%
-    sapply(function(v) length(v)) %>%
-    sum
+  c <- unlist(out_edges)
 
-  non_zero <- Filter(function(oe) length(oe) > 0, out_edges) %>%
-    Reduce(function(a, b) append(a, b), .) %>%
-    as.numeric
-
-  weight_value <- 1 / length(out_edges)
-
-  graph <- graph %>%
-    igraph::set_edge_attr("weight", igraph::E(.), 0) %>%
-    igraph::set_edge_attr(
-      "weight",
-      index = non_zero,
-      value = weight_value
-    )
-
-  # TODO CHECK IF HAS WEIGHTS
-
-  if (length(out_edges) == 0) {
+  if (length(igraph::incident_edges) == 0) {
     return(0)
   }
 
@@ -49,40 +32,17 @@ effective_information.igraph <- function(graph, effectiveness = FALSE) {
   w_in <- vector(mode = "numeric", length = length(nodes))
 
   set_win <- function(i) {
-    edges <- graph %>%
-      igraph::incident(nodes[i], mode = "out")
+    edges <- out_edges[[i]]
 
-    targets <- edges %>% igraph::head_of(graph, .) %>%
-      unique
-
-    weight <- rep(0, length(targets))
-
-    for (e in seq_along(edges)) {
-      wij <- match(igraph::head_of(graph, edges[[e]]), targets)
-
-      weight[wij] <- weight[wij] + (
-        edges[[e]] %>%
-          igraph::edge_attr(graph, "weight", .)%||%
-          0
-      )
-    }
-
-    if (sum(weight) > 0) {
-      w_out[i] <<- entropy::entropy(weight, unit = "log2")
-    }
-
-    out_edges_i <- igraph::incident(graph, nodes[i], mode = "out")
-    j <- igraph::ends(graph, out_edges_i)[, 2] %>%
+    weights <- edges %>%
+      igraph::get.edge.attribute(graph, "weight", .) %>%
       as.numeric
 
-    for (node_value in j) {
-      if (!is.na(node_value)) {
-        w_in[node_value] <<- w_in[node_value] +
-          (out_edges_i %>%
-             igraph::edge_attr(graph, "weight", .) %>%
-             sum)
-      }
-    }
+    w_out[i] <<- weights %>%
+      entropy::entropy(unit = "log2")
+
+    targets <- igraph::head_of(graph, edges)
+    w_in[targets] <<-  w_in[targets] + (weights / n_out)
   }
 
   lapply(seq_along(nodes), set_win)
