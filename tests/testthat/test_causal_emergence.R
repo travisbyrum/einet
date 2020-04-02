@@ -1,5 +1,7 @@
 context("Testing Causal Emergence")
 
+MAX_ERROR <- 0.001
+
 ### Testing Markov Blanket ---------------------------------------------
 test_that("Markov Blanket is calculated correctly", {
   graph <- matrix(
@@ -23,18 +25,19 @@ test_that("Markov Blanket is calculated correctly", {
 test_that("Causal Emergence is calculated correctly", {
   graph <- matrix(
     cbind(
-      c(0.0, 1.0, 0.0, 0.0),
-      c(0.0, 0.0, 1.0, 0.0),
-      c(0.0, 0.0, 0.0, 1.0),
-      c(0.0, 0.0, 0.0, 0.0)
+      c(0.0, 2.0, 1.0),
+      c(0.0, 0.0, 0.0),
+      c(0.0, 0.0, 0.0)
     ),
-    nrow = 4
+    nrow = 3
   ) %>%
     igraph::graph.adjacency(mode = "directed")
 
- ce <- causal_emergence(graph)
+  ce <- causal_emergence(graph)
 
- expect_true(length(ce) > 0)
+  expect_lte(ce$ei_macro - 0, MAX_ERROR)
+  expect_lte(ce$ei_micro - 0, MAX_ERROR)
+  expect_lte(ce$ce - 0, MAX_ERROR)
 })
 
 ### Testing Causal Emergence --------------------------------------------
