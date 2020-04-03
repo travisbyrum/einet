@@ -19,6 +19,8 @@ mb <- function(graph, nodes = igraph::V(graph)) {
 
 #' create_macro
 create_macro <- function(graph, mapping, macro_types, ...) {
+  assertthat::assert_that(length(mapping) > 0, msg = 'Macro mapping missing.')
+
   graph_micro <- check_network(graph)
   N_micro <- length(igraph::V(graph_micro))
 
@@ -27,13 +29,13 @@ create_macro <- function(graph, mapping, macro_types, ...) {
 
   stationary_dist <- stationary(graph_micro)
 
-  assertthat::assert_that(length(mapping) > 0, msg = 'Macro mapping missing.')
-
   nodes_micro <- sapply(mapping, function(value) value$node) %>%
-    unique
+    unique %>%
+    sort
 
   nodes_macro <- sapply(mapping, function(value) value$macro) %>%
-    unique
+    unique %>%
+    sort
 
   non_spatem2_max_index <- max(nodes_macro) + 1
 
@@ -88,8 +90,8 @@ create_macro <- function(graph, mapping, macro_types, ...) {
     }
   }
 
-  for (i in seq_along(nodes_macro)) {
-    final_node_i <- nodes_macro[[i]]
+  for (i in seq_along(nodes_in_macro_network)) {
+    final_node_i <- nodes_in_macro_network[[i]]
     W_i_out_final <- rep(0, n_TOO_BIG_MACRO)
 
     final_node_i_type <- all_final_node_types %>%
@@ -98,14 +100,14 @@ create_macro <- function(graph, mapping, macro_types, ...) {
       .$value
 
     if (final_node_i_type == 'micro') {
-      out_indices <- igraph::incident(graph_micro, 2, mode = "out") %>%
+      out_indices <- igraph::incident(graph_micro, final_node_i, mode = "out") %>%
         igraph::head_of(graph_micro, .) %>%
         as.numeric
 
       out_weights <- graph_micro %>%
         igraph::edge_attr(
           'weight',
-          index = igraph::incident(graph_micro, 2, mode = "out")
+          index = igraph::incident(graph_micro, final_node_i, mode = "out")
         )
 
       new_indices <- lapply(
@@ -114,9 +116,12 @@ create_macro <- function(graph, mapping, macro_types, ...) {
           ifelse(m$node %in% out_indices, m$macro, NA)
         }
       ) %>%
-        Filter(function(o) !is.na(o), .)
+        Filter(function(o) !is.na(o), .) %>%
+        as.numeric
 
-      W_i_out_final[out_indices] <- W_i_out_final[out_indices] + out_weights
+      w_ij <- new_indices[seq_along(out_weights)]
+      W_i_out_final[w_ij] <- W_i_out_final[w_ij] + out_weights
+
       TOO_BIG_MACRO[final_node_i, ] <- W_i_out_final
     } else if (final_node_i_type == 'spatial') {
       micros_in_macro_i <- mapping %>%
@@ -225,7 +230,7 @@ create_macro <- function(graph, mapping, macro_types, ...) {
         sapply(function(v) v$node) %>%
         as.numeric
 
-      if (is.matrix(Wout_macro_subgraph_weighted)) {
+      if (any(c("dgCMatrix", "matrix") %in% class(Wout_macro_subgraph_weighted))) {
         Wout_macro_i_exitrates <- Wout_macro_subgraph_weighted[, nodes_outside_macro_mic_index] %>%
           as.matrix %>%
           colSums
@@ -261,12 +266,10 @@ create_macro <- function(graph, mapping, macro_types, ...) {
           sapply(function(v) nodes_outside_macro_mic_index[v]) %>%
           as.numeric
 
-        for (j in seq_along(new_indices)) {
-          old_i <- out_indices[[j]]
-          wij_ind <- new_indices[[j]]
-          wij_ind <- mapping[[wij_ind]]$macro
-          W_i_out_final[wij_ind] <- W_i_out_final[wij_ind] + Wout_macro_i_exitrates_norm[old_i]
-        }
+        old_i <- out_indices[seq_along(new_indices)]
+        mc_i <- which(sapply(mapping, function(mp) mp$node) %in% new_indices)
+        wij_ind <- sapply(mapping, function(mp) mp$macro)[mc_i]
+        W_i_out_final[wij_ind] <- W_i_out_final[wij_ind] + Wout_macro_i_exitrates_norm[old_i]
 
         selfloop <- 1 - sum(W_i_out_final)
 
@@ -311,7 +314,7 @@ create_macro <- function(graph, mapping, macro_types, ...) {
         Filter(function(v) v$macro %in% nodes_outside_macro_i, .) %>%
         sapply(function(v) v$node)
 
-      if (is.matrix(Wout_macro_subgraph_weighted)) {
+      if (any(c("dgCMatrix", "matrix") %in% class(Wout_macro_subgraph_weighted))) {
         Wout_macro_i_exitrates <- Wout_macro_subgraph_weighted[, nodes_outside_macro_mic_index] %>%
           as.matrix %>%
           colSums
@@ -348,12 +351,10 @@ create_macro <- function(graph, mapping, macro_types, ...) {
           sapply(function(v) nodes_outside_macro_mic_index[v]) %>%
           as.numeric
 
-        for (j in seq_along(new_indices)) {
-          old_i <- out_indices[[j]]
-          wij_ind <- new_indices[[j]]
-          wij_ind <- macro_mapping[[wij_ind]]$macro
-          W_mu_out_final[wij_ind] <- W_mu_out_final[wij_ind] + Wout_macro_i_exitrates_norm[old_i]
-        }
+        old_i <- out_indices[seq_along(new_indices)]
+        mc_i <- which(sapply(mapping, function(mp) mp$node) %in% new_indices)
+        wij_ind <- sapply(mapping, function(mp) mp$macro)[mc_i]
+        W_i_out_final[wij_ind] <- W_i_out_final[wij_ind] + Wout_macro_i_exitrates_norm[old_i]
 
         W_i_out_final[as.numeric(mu_mu_index)] <- 1
 
@@ -373,8 +374,10 @@ create_macro <- function(graph, mapping, macro_types, ...) {
     }
   }
 
-  TOO_BIG_MACRO[nodes_in_macro_network, ][, nodes_in_macro_network] %>%
-    igraph::graph.adjacency(mode = "directed")
+  M <- TOO_BIG_MACRO[nodes_in_macro_network, ][, nodes_in_macro_network]
+
+  M %>%
+    igraph::graph.adjacency(mode = "directed", weighted = TRUE)
 }
 
 #'  Stationary Distribution
@@ -476,7 +479,7 @@ causal_emergence.igraph <- function(graph,
     cat(sprintf('[%.1f%%] Checking node %d\n', progress, node_i))
 
     macros_to_check <- update_blanket(blanket, checked_macros)[[node_i]]
-    queue <- macros_to_check
+    queue <- macros_to_check %>% sort
 
     if (length(macros_to_check) < 1) {
       next
@@ -494,10 +497,10 @@ causal_emergence.igraph <- function(graph,
 
       queue <- queue[sample(seq_along(queue))]
 
-      possible_macro <- head(queue, 1) %>%
+      possible_macro <- tail(queue, 1) %>%
         as.numeric
 
-      queue <- tail(queue, -1)
+      queue <- head(queue, -1)
 
       possible_mapping <- current_mapping
       possible_mapping[[possible_macro]]$macro <- node_i_macro
