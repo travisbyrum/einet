@@ -6,6 +6,11 @@
 \usage{
 stationary(graph, zero_cutoff = 1e-10)
 }
+\arguments{
+\item{graph}{igraph or matrix object.}
+
+\item{zero_cutoff}{Numeric threshold for zero value.}
+}
 \description{
 Stationary Distribution
 }

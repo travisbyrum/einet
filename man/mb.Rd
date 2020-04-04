@@ -4,7 +4,12 @@
 \alias{mb}
 \title{Create Markov Blanket}
 \usage{
-mb(graph, nodes)
+mb(graph, nodes = igraph::V(graph))
+}
+\arguments{
+\item{graph}{igraph or matrix object.}
+
+\item{nodes}{Numeric vector of vertices.}
 }
 \description{
 Create Markov Blanket

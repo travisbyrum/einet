@@ -1,6 +1,7 @@
 #'  Create Markov Blanket
 #'
-#' @export
+#' @param graph igraph or matrix object.
+#' @param nodes Numeric vector of vertices.
 mb <- function(graph, nodes = igraph::V(graph)) {
   lapply(
     seq_along(nodes),
@@ -18,6 +19,9 @@ mb <- function(graph, nodes = igraph::V(graph)) {
 }
 
 #'  Stationary Distribution
+#'
+#' @param graph igraph or matrix object.
+#' @param zero_cutoff Numeric threshold for zero value.
 stationary <- function(graph, zero_cutoff = 1e-10) {
   A <- igraph::as_adj(graph, attr = "weight")
 
@@ -28,7 +32,7 @@ stationary <- function(graph, zero_cutoff = 1e-10) {
   A <- rbind(t(as.matrix(I - A)), rep(1, rows))
   B <- c(rep(0, rows), 1)
 
-  P <- lm(B ~ 0 + A)$coefficients
+  P <- stats::lm(B ~ 0 + A)$coefficients
   P[P < zero_cutoff] <- 0
   P[is.na(P)] <- 0
 
@@ -40,6 +44,9 @@ stationary <- function(graph, zero_cutoff = 1e-10) {
 }
 
 #'  Update Markov Blanket
+#'
+#' @param blanket List of previous markov blanket.
+#' @param removal Numeric vector for node removal.
 update_blanket <- function(blanket, removal = NULL) {
   lapply(
     seq_along(blanket),
@@ -47,7 +54,12 @@ update_blanket <- function(blanket, removal = NULL) {
   )
 }
 
-#'  Causal Emergence
+#' Causal Emergence
+#'
+#' Calculates casual emergence.
+#'
+#' @param x igraph or matrix object.
+#' @param ... Span, and threshold parameters
 #'
 #' @export
 causal_emergence <- function(x, ...) UseMethod("causal_emergence")
@@ -62,21 +74,22 @@ causal_emergence.matrix <- function(x, ...) {
 }
 
 #' @export
-causal_emergence.list <- function(graphs, ...) {
-  valid <- sapply(graphs, igraph::is_igraph)
+causal_emergence.list <- function(x, ...) {
+  valid <- sapply(x, igraph::is_igraph)
 
   assertthat::assert_that(all(valid))
 
-  lapply(graphs, causal_emergence.igraph)
+  lapply(x, causal_emergence.igraph)
 }
 
 #' @export
-causal_emergence.igraph <- function(graph,
+causal_emergence.igraph <- function(x,
                                     span            = -1,
                                     thresh          = 1e-4,
                                     types           = FALSE,
                                     max_iterations  = 2,
                                     ...) {
+  graph <- x
   assertthat::assert_that(igraph::is.igraph(graph))
 
   graph_micro <- check_network(graph)
@@ -134,10 +147,10 @@ causal_emergence.igraph <- function(graph,
 
       queue <- queue[sample(seq_along(queue))]
 
-      possible_macro <- tail(queue, 1) %>%
+      possible_macro <- utils::tail(queue, 1) %>%
         as.numeric
 
-      queue <- head(queue, -1)
+      queue <- utils::head(queue, -1)
 
       possible_mapping <- current_mapping
       possible_mapping[[possible_macro]]$macro <- node_i_macro

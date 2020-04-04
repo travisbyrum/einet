@@ -11,7 +11,20 @@ This can then be used to search for macroscale representations of
 a network such that the coarse grained representation has more effective
 information than the microscale, a phenomenon known as causal emergence.
 }
-\section{einet functions}{
-
+\seealso{
+Useful links:
+\itemize{
+  \item \url{https://github.com/travisbyrum/einet}
+  \item Report bugs at \url{https://github.com/travisbyrum/einet/issues}
 }
 
+}
+\author{
+\strong{Maintainer}: Travis Byrum \email{tbyrum@terpmail.umd.edu}
+
+Authors:
+\itemize{
+  \item Anshuman Swain \email{answain@terpmail.umd.edu}
+}
+
+}

@@ -1,4 +1,11 @@
-#' @export
+#' Check Graph Network
+#'
+#' \code{check_network} returns processed graph.
+#'
+#' This is a pre-processing function that turns raw input into directed
+#' networks with edge weights.
+#'
+#' @param graph igraph
 check_network <- function(graph) {
   graph <- graph %>%
     igraph::simplify(remove.loops = FALSE) %>%

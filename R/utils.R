@@ -1,8 +1,4 @@
 #' @importFrom stats setNames
-#'
-#' @importFrom magrittr %>%
-#' @export
-magrittr::`%>%`
 
 ### default pipe ------------------------------------------------------------------------
 `%||%` <- function(a, b) if (is.null(a) || is.na(a)) b else a

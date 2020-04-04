@@ -6,6 +6,11 @@
 \usage{
 causal_emergence(x, ...)
 }
+\arguments{
+\item{x}{igraph or matrix object.}
+
+\item{...}{Span, and threshold parameters}
+}
 \description{
-Causal Emergence
+Calculates casual emergence.
 }

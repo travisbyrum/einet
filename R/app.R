@@ -1,3 +1,7 @@
+#' Start shiny app
+#'
+#' This starts an example shiny app that allows for user inputed graph objects.
+#'
 #' @export
 run_example <- function() {
   app_dir <- system.file("app", package = "einet")

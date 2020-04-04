@@ -6,6 +6,11 @@
 \usage{
 update_blanket(blanket, removal = NULL)
 }
+\arguments{
+\item{blanket}{List of previous markov blanket.}
+
+\item{removal}{Numeric vector for node removal.}
+}
 \description{
 Update Markov Blanket
 }

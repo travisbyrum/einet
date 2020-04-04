@@ -1,13 +1,24 @@
+#' Effective Information
+#'
+#' Calculates the effective information (EI) of a network, \eqn{G}, according to
+#' the definition provided in Klein & Hoel, 2019. Here, we subtract the
+#' average entropies of the out-weights of nodes in a network, WOUT_average
+#' from the entropy of the average out-weights in the network, WIN_entropy.
+#' \deqn{EI = H[\langle W_i^{out} \rangle] - \langle H[W_i^{out}] \rangle}
+#'
+#' @param graph igraph or matrix object.
+#' @param effectiveness Logical indicating whether or not to return network effectiveness.
+#' @return Numeric value indicating the effective information of the network.
 #' @export
-effective_information <- function(x, ...) UseMethod("effective_information")
+effective_information <- function(graph, effectiveness = FALSE) UseMethod("effective_information")
 
 #' @export
-effective_information.matrix <- function(x, ...) {
-  assertthat::assert_that(is.matrix(x))
+effective_information.matrix <- function(graph, effectiveness = FALSE) {
+  assertthat::assert_that(is.matrix(graph))
 
-  graph <- igraph::graph.adjacency(x,  mode = "directed")
+  graph <- igraph::graph.adjacency(graph,  mode = "directed")
 
-  effective_information.igraph(graph, ...)
+  effective_information.igraph(graph, effectiveness)
 }
 
 #' @export
