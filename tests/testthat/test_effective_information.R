@@ -70,3 +70,8 @@ test_that("effective_information is correctly calculated", {
   expect_equal(effective_information(star), 0)
   expect_equal(effective_information(example), 0)
 })
+
+### Testing Effective Information Internal Data -------------------------------
+test_that("effective_information is calculated with internal data", {
+  expect_lte(effective_information(karate) - 2.35, MAX_ERROR)
+})
