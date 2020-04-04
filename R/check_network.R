@@ -18,8 +18,9 @@ check_network <- function(graph) {
     out_edges_i <- out_edges[[i]]
 
     graph_weights <- igraph::get.edge.attribute(graph, "weight", out_edges_i)
+    has_weights <- any(sapply(graph_weights, is_truthy))
 
-    if (is_truthy(graph_weights)) {
+    if (has_weights) {
       graph <- graph %>%
         igraph::set_edge_attr(
           "weight",

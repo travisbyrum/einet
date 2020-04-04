@@ -33,8 +33,6 @@ effective_information.igraph <- function(graph, effectiveness = FALSE) {
     Filter(function(v) length(v) > 0, .) %>%
     length
 
-  c <- unlist(out_edges)
-
   if (length(igraph::incident_edges) == 0) {
     return(0)
   }
@@ -48,6 +46,11 @@ effective_information.igraph <- function(graph, effectiveness = FALSE) {
     weights <- edges %>%
       igraph::get.edge.attribute(graph, "weight", .) %>%
       as.numeric
+
+    assertthat::assert_that(
+      !any(is.na(weights)),
+      msg = paste('missing weight values for node:', i)
+    )
 
     w_out[i] <<- weights %>%
       entropy::entropy(unit = "log2")
