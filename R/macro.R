@@ -6,6 +6,7 @@
 #' @param ... Passed arguments.
 create_macro <- function(graph, mapping, macro_types, ...) {
   assertthat::assert_that(length(mapping) > 0, msg = 'Macro mapping missing.')
+  assertthat::assert_that(!is.null(names(mapping)), msg = 'Macro mapping missing.')
 
   graph_micro <- check_network(graph)
   N_micro <- length(igraph::V(graph_micro))
@@ -15,11 +16,13 @@ create_macro <- function(graph, mapping, macro_types, ...) {
 
   stationary_dist <- stationary(graph_micro)
 
-  nodes_micro <- sapply(mapping, function(value) value$node) %>%
+  nodes_micro <- mapping %>%
+    as.numeric %>%
     unique %>%
     sort
 
-  nodes_macro <- sapply(mapping, function(value) value$macro) %>%
+  nodes_macro <- mapping %>%
+    get_macro %>%
     unique %>%
     sort
 
@@ -96,24 +99,14 @@ create_macro <- function(graph, mapping, macro_types, ...) {
           index = igraph::incident(graph_micro, final_node_i, mode = "out")
         )
 
-      new_indices <- lapply(
-        mapping,
-        function(m) {
-          ifelse(m$node %in% out_indices, m$macro, NA)
-        }
-      ) %>%
-        Filter(function(o) !is.na(o), .) %>%
-        as.numeric
+      new_indices <- get_macro(mapping, out_indices)
 
       w_ij <- new_indices[seq_along(out_weights)]
       W_i_out_final[w_ij] <- W_i_out_final[w_ij] + out_weights
 
       TOO_BIG_MACRO[final_node_i, ] <- W_i_out_final
     } else if (final_node_i_type == 'spatial') {
-      micros_in_macro_i <- mapping %>%
-        Filter(function(v) v$macro == final_node_i, .) %>%
-        sapply(function(v) v$node)
-
+      micros_in_macro_i <- mapping[which(get_macro(mapping) %in% final_node_i)]
       macro_row_sum <- rep(0, NROW(w_out))
 
       Wout_macro_subgraph <- w_out %>%
@@ -122,12 +115,9 @@ create_macro <- function(graph, mapping, macro_types, ...) {
       nodes_outside_macro_i <- nodes_in_macro_network %>%
         Filter(function(v) !(v %in% micros_in_macro_i) && i != final_node_i, .)
 
-      nodes_outside_macro_mic_index <- mapping %>%
-        Filter(function(v) v$macro %in% nodes_outside_macro_i, .) %>%
-        sapply(function(v) v$node)
+      nodes_outside_macro_mic_index <- mapping[which(get_macro(mapping) %in% nodes_outside_macro_i)]
 
-      input_probs_to_macro <- w_out %>%
-        t %>%
+      input_probs_to_macro <- t(w_out) %>%
         .[micros_in_macro_i, ] %>%
         t
 
@@ -184,9 +174,7 @@ create_macro <- function(graph, mapping, macro_types, ...) {
         }
       }
     } else if (final_node_i_type == 'spatem1') {
-      micros_in_macro_i <- mapping %>%
-        Filter(function(v) v$macro == final_node_i, .) %>%
-        sapply(function(v) v$node) %>%
+      micros_in_macro_i <- mapping[which(get_macro(mapping) %in% final_node_i)] %>%
         as.numeric
 
       Wout_macro_subgraph <- w_out %>%
@@ -211,9 +199,7 @@ create_macro <- function(graph, mapping, macro_types, ...) {
         Filter(function(v) !(v %in% micros_in_macro_i) && v != final_node_i, .) %>%
         as.numeric
 
-      nodes_outside_macro_mic_index <- mapping %>%
-        Filter(function(v) v$macro %in% nodes_outside_macro_i, .) %>%
-        sapply(function(v) v$node) %>%
+      nodes_outside_macro_mic_index <- mapping[which(get_macro(mapping) %in% nodes_outside_macro_i)] %>%
         as.numeric
 
       if (any(c("dgCMatrix", "matrix") %in% class(Wout_macro_subgraph_weighted))) {
@@ -253,8 +239,7 @@ create_macro <- function(graph, mapping, macro_types, ...) {
           as.numeric
 
         old_i <- out_indices[seq_along(new_indices)]
-        mc_i <- which(sapply(mapping, function(mp) mp$node) %in% new_indices)
-        wij_ind <- sapply(mapping, function(mp) mp$macro)[mc_i]
+        wij_ind <- get_macro(mapping)[which(mapping %in% new_indices)]
         W_i_out_final[wij_ind] <- W_i_out_final[wij_ind] + Wout_macro_i_exitrates_norm[old_i]
 
         selfloop <- 1 - sum(W_i_out_final)
@@ -269,10 +254,7 @@ create_macro <- function(graph, mapping, macro_types, ...) {
     } else if (final_node_i_type == 'spatem2') {
       mu_mu_index <- macro_mumu_pairings[[final_node_i]]
       W_mu_out_final <- rep(0, n_TOO_BIG_MACRO)
-
-      micros_in_macro_i <- mapping %>%
-        Filter(function(v) v$macro == final_node_i, .) %>%
-        sapply(function(v) v$node) %>%
+      micros_in_macro_i <- mapping[which(get_macro(mapping) %in% final_node_i)] %>%
         as.numeric
 
       Wout_macro_subgraph <- w_out %>%
@@ -296,9 +278,8 @@ create_macro <- function(graph, mapping, macro_types, ...) {
       nodes_outside_macro_i <- nodes_in_macro_network %>%
         Filter(function(v) !(v %in% micros_in_macro_i) && i != final_node_i, .)
 
-      nodes_outside_macro_mic_index <- mapping %>%
-        Filter(function(v) v$macro %in% nodes_outside_macro_i, .) %>%
-        sapply(function(v) v$node)
+      nodes_outside_macro_mic_index <- mapping[which(get_macro(mapping) %in% nodes_outside_macro_i)] %>%
+        as.numeric
 
       if (any(c("dgCMatrix", "matrix") %in% class(Wout_macro_subgraph_weighted))) {
         Wout_macro_i_exitrates <- Wout_macro_subgraph_weighted[, nodes_outside_macro_mic_index] %>%
@@ -338,8 +319,7 @@ create_macro <- function(graph, mapping, macro_types, ...) {
           as.numeric
 
         old_i <- out_indices[seq_along(new_indices)]
-        mc_i <- which(sapply(mapping, function(mp) mp$node) %in% new_indices)
-        wij_ind <- sapply(mapping, function(mp) mp$macro)[mc_i]
+        wij_ind <- get_macro(mapping)[which(mapping %in% new_indices)]
         W_i_out_final[wij_ind] <- W_i_out_final[wij_ind] + Wout_macro_i_exitrates_norm[old_i]
 
         W_i_out_final[as.numeric(mu_mu_index)] <- 1

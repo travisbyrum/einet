@@ -113,18 +113,11 @@ causal_emergence.igraph <- function(x,
   macro_types <- list()
   macro_types_tmp <- macro_types
 
-  current_mapping <- lapply(
-    seq_along(nodes_left),
-    function(i) {
-      list(
-        macro = nodes_left[[i]],
-        node  = nodes_left[[i]]
-      )
-    }
-  )
+  current_mapping <- nodes_left %>%
+    setNames(nodes_left)
 
-  for (i in seq_along(shuffle)) {
-    node_i <- nodes_left[[shuffle[i]]]
+  for (i in shuffle) {
+    node_i <- nodes_left[[i]]
     progress <- (i / length(shuffle)) * 100
     cat(sprintf('[%.1f%%] Checking node %d\n', progress, node_i))
 
@@ -136,9 +129,9 @@ causal_emergence.igraph <- function(x,
     }
 
     node_i_macro <- ifelse(
-      current_mapping[[node_i]]$macro == node_i,
-      max(sapply(current_mapping, function(i) i$macro)) + 1,
-      current_mapping[[node_i]]
+      get_macro(current_mapping, node_i) == node_i,
+      max_macro(current_mapping) + 1,
+      get_macro(current_mapping, node_i)
     )
 
     iteration <- 0
@@ -152,9 +145,8 @@ causal_emergence.igraph <- function(x,
 
       queue <- utils::head(queue, -1)
 
-      possible_mapping <- current_mapping
-      possible_mapping[[possible_macro]]$macro <- node_i_macro
-      possible_mapping[[node_i]]$macro <- node_i_macro
+      possible_mapping <- current_mapping %>%
+        set_macro(c(possible_macro, node_i), node_i_macro)
 
       if (types) {
 
@@ -185,9 +177,9 @@ causal_emergence.igraph <- function(x,
         checked_macros <- checked_macros %>%
           append(c(as.numeric(node_i), possible_mapping))
 
-        nodes_in_macro_i <-  macro_mapping %>%
-          Filter(function(v) v$macro == node_i_macro, .) %>%
-          sapply(function(v) v$node)
+        nodes_in_macro_i <- which(get_macro(macro_mapping) %in% node_i_macro) %>%
+          macro_mapping[.] %>%
+          as.numeric
 
         for (new_micro_i in seq_along(nodes_in_macro_i)) {
           neighbors_i_M <- mb(graph_micro, new_micro_i)[[1]] %>%
