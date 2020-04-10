@@ -12,7 +12,7 @@ create_macro <- function(graph, mapping, macro_types, ...) {
   N_micro <- length(igraph::V(graph_micro))
 
   w_out <- graph_micro %>%
-    igraph::as_adj(attr = "weight")
+    igraph::as_adj(attr = 'weight')
 
   stationary_dist <- stationary(graph_micro)
 
@@ -28,7 +28,7 @@ create_macro <- function(graph, mapping, macro_types, ...) {
 
   non_spatem2_max_index <- max(nodes_macro) + 1
 
-  n_macros_spatem2 <- sapply(macro_types, function(v) v == "spatem2") %>%
+  n_macros_spatem2 <- sapply(macro_types, function(v) v == 'spatem2') %>%
     as.numeric %>%
     sum(na.rm = TRUE)
 
@@ -298,7 +298,7 @@ create_macro <- function(graph, mapping, macro_types, ...) {
         TOO_BIG_MACRO[final_node_i, ] <- W_i_out_final
         TOO_BIG_MACRO[as.numeric(mu_mu_index), ] <- W_mu_out_final
       } else {
-        out_macro_i_exitrates_norm <- Wout_macro_i_exitrates.copy
+        out_macro_i_exitrates_norm <- Wout_macro_i_exitrates
 
         for (j in seq_along(Wout_macro_i_exitrates)) {
           wij <- Wout_macro_i_exitrates[[j]]
@@ -343,5 +343,5 @@ create_macro <- function(graph, mapping, macro_types, ...) {
   M <- TOO_BIG_MACRO[nodes_in_macro_network, ][, nodes_in_macro_network]
 
   M %>%
-    igraph::graph.adjacency(mode = "directed", weighted = TRUE)
+    igraph::graph.adjacency(mode = 'directed', weighted = TRUE)
 }

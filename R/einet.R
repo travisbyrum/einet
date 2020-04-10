@@ -8,3 +8,5 @@
 #' @docType package
 #' @name einet
 "_PACKAGE"
+
+if (getRversion() >= '2.15.1')  utils::globalVariables(c('.'))

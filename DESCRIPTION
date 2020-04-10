@@ -8,8 +8,8 @@ Authors@R: c(
     person("Anshuman", "Swain", email = "answain@terpmail.umd.edu",
            role = c("aut"))
     )
-Description: Methods and utilites for causal emergence.
-    Used to explore and compute various information theory metrics for networks, such as effective information, effectiveness and causal emegence.
+Description: Methods and utilities for causal emergence.
+    Used to explore and compute various information theory metrics for networks, such as effective information, effectiveness and causal emergence.
 License: MIT + file LICENSE
 URL: https://github.com/travisbyrum/einet
 BugReports: https://github.com/travisbyrum/einet/issues
