@@ -6,7 +6,9 @@ Authors@R: c(
     person("Travis", "Byrum", email = "tbyrum@terpmail.umd.edu",
            role = c("aut", "cre")),
     person("Anshuman", "Swain", email = "answain@terpmail.umd.edu",
-           role = c("aut"))
+           role = c("aut")),
+    person("Brennan", "Klein", email = "klein.br@husky.neu.edu",
+           role = c("aut"))        
     )
 Description: Methods and utilities for causal emergence.
     Used to explore and compute various information theory metrics for networks, such as effective information, effectiveness and causal emergence.
