@@ -1,5 +1,5 @@
 # Einet
-R code compilation to explore and compute various information theory metrics for networks, such as effective information, effectiveness and causal emegence.
+R code compilation to explore and compute various information theory metrics for networks, such as effective information, effectiveness and causal emergence.
 
 ## Web App
 
