@@ -8,7 +8,7 @@ Authors@R: c(
     person("Anshuman", "Swain", email = "answain@terpmail.umd.edu",
            role = c("aut")),
     person("Brennan", "Klein", email = "klein.br@northeastern.edu",
-           role = c("aut"))
+           role = c("aut")),
     person("William", "Fagan", email = "bfagan@umd.edu",
            role = c("aut"))
     )

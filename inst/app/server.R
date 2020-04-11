@@ -68,7 +68,10 @@ server <- function(input, output) {
       graph <- igraph::graph.adjacency(graph, mode = "directed")
     }
 
-    wc <- sapply(ce$mapping, function(m) m$macro) %>%
+    print(names(ce$mapping))
+
+    wc <- names(ce$mapping) %>%
+      as.numeric %>%
       igraph::make_clusters(graph, .)
 
     new_cols <- RColorBrewer::brewer.pal(n = wc$vcount, name = "RdBu")[igraph::membership(wc)]
