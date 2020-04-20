@@ -39,7 +39,7 @@ ui <- fluidPage(
       plotOutput(outputId = "graph"),
       h1("Summary"),
       textOutput("ei"),
-      textOutput("ce"),
+      verbatimTextOutput("ce"),
     )
   )
 )

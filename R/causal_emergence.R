@@ -70,13 +70,13 @@ update_blanket <- function(blanket, removal = NULL) {
 #' coarse-grainings to see if it finds one with higher effective information.
 #'
 #' @param x igraph or matrix object.
+#' @param verbose logical indicating verbose message output.
 #' @param ... Span, and threshold parameters
 #'
 #' @return A list with letters and numbers.
 #' \itemize{
 #'   \item g_micro - Graph of original micro-scale network.
 #'   \item g_macro - Graph of macro-scale network.
-#'   \item macro_types - \code{list} mapping type for each macro node.
 #'   \item mapping - \code{list} mapping from micro to macro scales giving
 #' the largest increase in effective information.
 #'   \item ei_macro - Effective information of macro scale network.
@@ -124,7 +124,8 @@ causal_emergence.igraph <- function(x,
                                     span            = -1,
                                     thresh          = 1e-4,
                                     types           = FALSE,
-                                    max_iterations  = 2,
+                                    verbose         = FALSE,
+                                    max_iterations  = 1000,
                                     ...) {
   graph <- x
   assertthat::assert_that(igraph::is.igraph(graph))
@@ -153,10 +154,14 @@ causal_emergence.igraph <- function(x,
   current_mapping <- nodes_left %>%
     setNames(nodes_left)
 
-  for (i in shuffle) {
-    node_i <- nodes_left[[i]]
+  for (i in seq_along(shuffle)) {
+    node_i <- nodes_left[[shuffle[[i]]]]
     progress <- (i / length(shuffle)) * 100
-    message(sprintf('[%.1f%%] Checking node %d\n', progress, node_i))
+
+    if (verbose) {
+      sprintf('[%.1f%%] Checking node %d\n', progress, node_i) %>%
+        message
+    }
 
     macros_to_check <- update_blanket(blanket, checked_macros)[[node_i]]
     queue <- macros_to_check %>% sort
@@ -208,6 +213,14 @@ causal_emergence.igraph <- function(x,
         ei_current <- ei_macro
         eff_current <- eff_macro
 
+        if (verbose) {
+          sprintf(
+            'Successful macro grouping found.  New effective information: %.4f',
+            eff_current
+          ) %>%
+            message
+        }
+
         macro_mapping <- possible_mapping
         macro_types <- macro_types_tmp
 
@@ -241,7 +254,6 @@ causal_emergence.igraph <- function(x,
       g_micro     = graph_micro,
       g_macro     = create_macro(graph, current_mapping, macro_types) %>%
         check_network(),
-      macro_types = macro_types,
       mapping     = current_mapping,
       ei_macro    = ei_current,
       ei_micro    = ei_micro,

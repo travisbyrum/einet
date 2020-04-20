@@ -56,8 +56,17 @@ server <- function(input, output) {
   })
 
   causal <- reactive({
-    dataset() %>%
-      causal_emergence
+    withProgress(
+      {
+        df <- dataset() %>%
+          causal_emergence
+
+        incProgress(1)
+      },
+      message = 'Calculating causal emergence.'
+    )
+
+    df
   })
 
   output$graph <- renderPlot({
@@ -68,14 +77,16 @@ server <- function(input, output) {
       graph <- igraph::graph.adjacency(graph, mode = "directed")
     }
 
-    print(names(ce$mapping))
-
     wc <- names(ce$mapping) %>%
       as.numeric %>%
       igraph::make_clusters(graph, .)
 
     new_cols <- RColorBrewer::brewer.pal(n = wc$vcount, name = "RdBu")[igraph::membership(wc)]
     par(mfrow=c(1,1))
+
+    output$ce <- renderPrint({
+      ce
+    })
 
     plot(
       wc,
@@ -93,12 +104,5 @@ server <- function(input, output) {
       effective_information
 
     sprintf('Effective Information: %.2f\n', ei)
-  })
-
-  output$ce <- renderText({
-    # ce <- dataset() %>%
-    #   causal_emergence
-
-    # sprintf('Causal Emergence EI Micro: %.2f\n', ce$ei_micro)
   })
 }

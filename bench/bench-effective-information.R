@@ -1,8 +1,9 @@
 library(einet)
 library(bench)
 
+
 bench::mark(
-  seq(2),
+  effective_information(karate),
 
   check = FALSE
 )
