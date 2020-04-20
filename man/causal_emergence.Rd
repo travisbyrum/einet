@@ -11,6 +11,35 @@ causal_emergence(x, ...)
 
 \item{...}{Span, and threshold parameters}
 }
+\value{
+A list with letters and numbers.
+\itemize{
+  \item g_micro - Graph of original micro-scale network.
+  \item g_macro - Graph of macro-scale network.
+  \item macro_types - \code{list} mapping type for each macro node.
+  \item mapping - \code{list} mapping from micro to macro scales giving
+the largest increase in effective information.
+  \item ei_macro - Effective information of macro scale network.
+  \item ei_micro - Effective information of micro scale network.
+  \item ce - Numerical value for causal emergence.
+}
+}
 \description{
-Calculates casual emergence.
+Given a microscale network, \code{G}, this function iteratively checks different
+coarse-grainings to see if it finds one with higher effective information.
+}
+\examples{
+graph <- matrix(
+  cbind(
+    c(0.0, 1.0, 0.0, 0.0),
+    c(0.0, 0.0, 1.0, 0.0),
+    c(0.0, 0.0, 0.0, 1.0),
+    c(0.0, 0.0, 0.0, 0.0)
+  ),
+ nrow = 4
+) \%>\%
+  igraph::graph.adjacency(mode = "directed")
+
+causal_emergence(graph)
+
 }

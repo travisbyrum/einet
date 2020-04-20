@@ -15,6 +15,11 @@ create_macro(graph, mapping, macro_types, ...)
 
 \item{...}{Passed arguments.}
 }
+\value{
+Directed igraph graph object corresponding to a coarse-grained network
+according to the \code{mapping} of micro nodes onto macro nodes, given by \code{mapping}.
+}
 \description{
-create_macro
+Coarse-grains a network according to the specified macro_mapping and
+the types of macros that each macro is associated with.
 }

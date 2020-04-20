@@ -11,6 +11,9 @@ stationary(graph, zero_cutoff = 1e-10)
 
 \item{zero_cutoff}{Numeric threshold for zero value.}
 }
+\value{
+A numeric \code{vector} corresponding to stationary distribution.
+}
 \description{
-Stationary Distribution
+Gives a stationary probability vector of a given network.
 }

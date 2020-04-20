@@ -19,5 +19,19 @@ Calculates the effective information (EI) of a network, \eqn{G}, according to
 the definition provided in Klein & Hoel, 2019. Here, we subtract the
 average entropies of the out-weights of nodes in a network, WOUT_average
 from the entropy of the average out-weights in the network, WIN_entropy.
-\deqn{EI = H[\langle W_i^{out} \rangle] - \langle H[W_i^{out}] \rangle}
+}
+\examples{
+graph <- matrix(
+  cbind(
+    c(0.0, 1.0, 0.0, 0.0),
+    c(0.0, 0.0, 1.0, 0.0),
+    c(0.0, 0.0, 0.0, 1.0),
+    c(0.0, 0.0, 0.0, 0.0)
+  ),
+ nrow = 4
+) \%>\%
+  igraph::graph.adjacency(mode = "directed")
+
+effective_information(graph)
+
 }

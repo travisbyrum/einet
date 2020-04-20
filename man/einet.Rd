@@ -25,6 +25,8 @@ Useful links:
 Authors:
 \itemize{
   \item Anshuman Swain \email{answain@terpmail.umd.edu}
+  \item Brennan Klein \email{klein.br@northeastern.edu}
+  \item William Fagan \email{bfagan@umd.edu}
 }
 
 }

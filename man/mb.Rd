@@ -11,6 +11,11 @@ mb(graph, nodes = igraph::V(graph))
 
 \item{nodes}{Numeric vector of vertices.}
 }
+\value{
+A \code{list} of node descendants, parents, and neighbors.
+}
 \description{
-Create Markov Blanket
+Given a graph and a specified \code{vector} of internal node(s), returns
+the parents, the children, and the parents of the children of the
+internal node(s).
 }

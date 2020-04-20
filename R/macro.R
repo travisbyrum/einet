@@ -1,9 +1,17 @@
 #' create_macro
 #'
+#' @description
+#' Coarse-grains a network according to the specified macro_mapping and
+#' the types of macros that each macro is associated with.
+#'
 #' @param graph igraph
 #' @param mapping List mapping from micro to macro nodes.
 #' @param macro_types List of node distribution types.
 #' @param ... Passed arguments.
+#'
+#' @return
+#' Directed igraph graph object corresponding to a coarse-grained network
+#' according to the \code{mapping} of micro nodes onto macro nodes, given by \code{mapping}.
 create_macro <- function(graph, mapping, macro_types, ...) {
   assertthat::assert_that(length(mapping) > 0, msg = 'Macro mapping missing.')
   assertthat::assert_that(!is.null(names(mapping)), msg = 'Macro mapping missing.')

@@ -1,7 +1,13 @@
-#'  Create Markov Blanket
+#' Create Markov Blanket
+#'
+#' Given a graph and a specified \code{vector} of internal node(s), returns
+#' the parents, the children, and the parents of the children of the
+#' internal node(s).
 #'
 #' @param graph igraph or matrix object.
 #' @param nodes Numeric vector of vertices.
+#'
+#' @return A \code{list} of node descendants, parents, and neighbors.
 mb <- function(graph, nodes = igraph::V(graph)) {
   lapply(
     seq_along(nodes),
@@ -18,10 +24,14 @@ mb <- function(graph, nodes = igraph::V(graph)) {
   )
 }
 
-#'  Stationary Distribution
+#' Stationary Distribution
+#'
+#' Gives a stationary probability vector of a given network.
 #'
 #' @param graph igraph or matrix object.
 #' @param zero_cutoff Numeric threshold for zero value.
+#'
+#' @return A numeric \code{vector} corresponding to stationary distribution.
 stationary <- function(graph, zero_cutoff = 1e-10) {
   A <- igraph::as_adj(graph, attr = "weight")
 
@@ -56,10 +66,37 @@ update_blanket <- function(blanket, removal = NULL) {
 
 #' Causal Emergence
 #'
-#' Calculates casual emergence.
+#' Given a microscale network, \code{G}, this function iteratively checks different
+#' coarse-grainings to see if it finds one with higher effective information.
 #'
 #' @param x igraph or matrix object.
 #' @param ... Span, and threshold parameters
+#'
+#' @return A list with letters and numbers.
+#' \itemize{
+#'   \item g_micro - Graph of original micro-scale network.
+#'   \item g_macro - Graph of macro-scale network.
+#'   \item macro_types - \code{list} mapping type for each macro node.
+#'   \item mapping - \code{list} mapping from micro to macro scales giving
+#' the largest increase in effective information.
+#'   \item ei_macro - Effective information of macro scale network.
+#'   \item ei_micro - Effective information of micro scale network.
+#'   \item ce - Numerical value for causal emergence.
+#' }
+#'
+#' @examples
+#' graph <- matrix(
+#'   cbind(
+#'     c(0.0, 1.0, 0.0, 0.0),
+#'     c(0.0, 0.0, 1.0, 0.0),
+#'     c(0.0, 0.0, 0.0, 1.0),
+#'     c(0.0, 0.0, 0.0, 0.0)
+#'   ),
+#'  nrow = 4
+#' ) %>%
+#'   igraph::graph.adjacency(mode = "directed")
+#'
+#' causal_emergence(graph)
 #'
 #' @export
 causal_emergence <- function(x, ...) UseMethod("causal_emergence")
@@ -202,9 +239,9 @@ causal_emergence.igraph <- function(x,
   structure(
     list(
       g_micro     = graph_micro,
-      macro_types = macro_types,
       g_macro     = create_macro(graph, current_mapping, macro_types) %>%
         check_network(),
+      macro_types = macro_types,
       mapping     = current_mapping,
       ei_macro    = ei_current,
       ei_micro    = ei_micro,
