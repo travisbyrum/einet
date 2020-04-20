@@ -119,7 +119,7 @@ causal_emergence.igraph <- function(x,
   for (i in shuffle) {
     node_i <- nodes_left[[i]]
     progress <- (i / length(shuffle)) * 100
-    cat(sprintf('[%.1f%%] Checking node %d\n', progress, node_i))
+    message(sprintf('[%.1f%%] Checking node %d\n', progress, node_i))
 
     macros_to_check <- update_blanket(blanket, checked_macros)[[node_i]]
     queue <- macros_to_check %>% sort
