@@ -16,7 +16,6 @@ A list with letters and numbers.
 \itemize{
   \item g_micro - Graph of original micro-scale network.
   \item g_macro - Graph of macro-scale network.
-  \item macro_types - \code{list} mapping type for each macro node.
   \item mapping - \code{list} mapping from micro to macro scales giving
 the largest increase in effective information.
   \item ei_macro - Effective information of macro scale network.

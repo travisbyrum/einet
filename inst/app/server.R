@@ -99,10 +99,10 @@ server <- function(input, output) {
     )
   })
 
-  output$ei <- renderText({
+  output$ei <- renderPrint({
     ei <- dataset() %>%
       effective_information
 
-    sprintf('Effective Information: %.2f\n', ei)
+    sprintf('Effective Information: %.2f', ei)
   })
 }

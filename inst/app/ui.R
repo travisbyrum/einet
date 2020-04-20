@@ -12,7 +12,10 @@ ui <- fluidPage(
         "file_graph", "Choose Graph File",
         multiple = FALSE,
         accept = c(
-          "text/plain"
+          "text/plain",
+          "text/comma-separated-values,text/plain",
+          ".csv",
+          ".graphml"
         )
       ),
       tags$hr(),
@@ -38,7 +41,7 @@ ui <- fluidPage(
       h1("Graph"),
       plotOutput(outputId = "graph"),
       h1("Summary"),
-      textOutput("ei"),
+      verbatimTextOutput("ei"),
       verbatimTextOutput("ce"),
     )
   )

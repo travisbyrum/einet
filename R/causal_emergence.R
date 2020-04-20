@@ -70,7 +70,6 @@ update_blanket <- function(blanket, removal = NULL) {
 #' coarse-grainings to see if it finds one with higher effective information.
 #'
 #' @param x igraph or matrix object.
-#' @param verbose logical indicating verbose message output.
 #' @param ... Span, and threshold parameters
 #'
 #' @return A list with letters and numbers.
@@ -124,7 +123,6 @@ causal_emergence.igraph <- function(x,
                                     span            = -1,
                                     thresh          = 1e-4,
                                     types           = FALSE,
-                                    verbose         = FALSE,
                                     max_iterations  = 1000,
                                     ...) {
   graph <- x
@@ -158,10 +156,8 @@ causal_emergence.igraph <- function(x,
     node_i <- nodes_left[[shuffle[[i]]]]
     progress <- (i / length(shuffle)) * 100
 
-    if (verbose) {
-      sprintf('[%.1f%%] Checking node %d\n', progress, node_i) %>%
-        message
-    }
+    sprintf('[%.1f%%] Checking node %d\n', progress, node_i) %>%
+      message
 
     macros_to_check <- update_blanket(blanket, checked_macros)[[node_i]]
     queue <- macros_to_check %>% sort
@@ -213,13 +209,11 @@ causal_emergence.igraph <- function(x,
         ei_current <- ei_macro
         eff_current <- eff_macro
 
-        if (verbose) {
-          sprintf(
-            'Successful macro grouping found.  New effective information: %.4f',
-            eff_current
-          ) %>%
-            message
-        }
+        sprintf(
+          'Successful macro grouping found.  New effective information: %.4f',
+          eff_current
+        ) %>%
+          message
 
         macro_mapping <- possible_mapping
         macro_types <- macro_types_tmp
