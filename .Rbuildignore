@@ -5,3 +5,5 @@
 ^\.circleci/config\.yml$
 ^bench$
 ^cran-comments\.md$
+^revdep$
+^Makefile$
