@@ -1,7 +1,7 @@
 Package: einet
 Type: Package
 Title: Effective Information and Causal Emergence
-Version: 0.1.0
+Version: 0.1.0.9000
 Authors@R: c(
     person("Travis", "Byrum", email = "tbyrum@terpmail.umd.edu",
            role = c("aut", "cre")),
