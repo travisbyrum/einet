@@ -3,7 +3,7 @@
 <!-- badges: start -->
 
 [![CRAN status](https://www.r-pkg.org/badges/version/einet)](https://CRAN.R-project.org/package=einet)
-
+[![CircleCI build status](https://circleci.com/gh/travisbyrum/einet.svg?style=svg)](https://circleci.com/gh/travisbyrum/einet)
 <!-- badges: end -->
 
 # Effective information and causal emergence in R
