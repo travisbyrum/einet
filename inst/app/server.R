@@ -36,7 +36,7 @@ or_or <- matrix(
 
 server <- function(input, output) {
   dataset <- reactive({
-    if (is_truthy(input$file_graph)) {
+    if (einet:::is_truthy(input$file_graph)) {
       graph_out <- igraph::read_graph(
         input$file_graph$datapath,
         format = input$graph_type
