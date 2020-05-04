@@ -35,11 +35,7 @@ create_macro <- function(graph, mapping, macro_types, ...) {
     sort
 
   non_spatem2_max_index <- max(nodes_macro) + 1
-
-  n_macros_spatem2 <- sapply(macro_types, function(v) v == 'spatem2') %>%
-    as.numeric %>%
-    sum(na.rm = TRUE)
-
+  n_macros_spatem2 <- sum(names(macro_types) == "spatem2", na.rm = TRUE)
   new_max_index_tmp <- non_spatem2_max_index + n_macros_spatem2
 
   macro_id_spatem2 <- seq(
@@ -77,7 +73,7 @@ create_macro <- function(graph, mapping, macro_types, ...) {
   mu_mu <- NULL
 
   for (i in seq_along(macro_types)) {
-    value <- macro_types[[i]]
+    value <- names(macro_types)[[i]]
 
     if (!is.null(value) && !is.na(value) && value == 'spatem2') {
       mu_mu <- macro_id_spatem2[[spt2_ind_tmp]]
@@ -352,4 +348,93 @@ create_macro <- function(graph, mapping, macro_types, ...) {
 
   M %>%
     igraph::graph.adjacency(mode = 'directed', weighted = TRUE)
+}
+
+#' select_macro
+#'
+#' @description
+#' Given a potential mapping of the network and a new macro node,
+#' this function assigns a new macro node to the candidate node optimized for
+#' maximal accuracy.
+#'
+#' @param graph igraph object of micro network
+#' @param macro numeric of possible macro node
+#' @param mapping List mapping from micro to macro nodes.
+#' @param macro_types List of node distribution types.
+#' @param ... Passed arguments.
+#'
+#' @return
+#' List with igraph graph object corresponding to a coarse-grained network
+#' and updated node types.
+select_macro <- function(graph, macro, mapping, macro_types, ...) {
+  assertthat::assert_that(length(macro) == 1, msg = 'Macro mapping missing.')
+
+  graph_micro <- check_network(graph)
+
+  #micro nodes within macro
+  nodes_in_new_macro <- mapping[sapply(names(mapping), function(x) x == macro)]
+  rest_of_nodes <- mapping[sapply(names(mapping), function(x) x != macro)]
+
+  edges_from_micro_in_macro <- nodes_in_new_macro %>%
+    as.numeric %>%
+    lapply(
+      function(v) {
+        igraph::adjacent_vertices(graph_micro, v, mode = "out")[[1]] %>%
+          as.numeric
+      }
+    )
+
+  nodes_in_macro_with_outside_output <- seq_along(edges_from_micro_in_macro) %>%
+    Filter(function(v) {
+      length(intersect(edges_from_micro_in_macro[[v]], rest_of_nodes)) > 1
+    }, .) %>%
+    nodes_in_new_macro[[.]] %>%
+    as.numeric
+
+  edges_to_micro_in_macro <- nodes_in_new_macro %>%
+    as.numeric %>%
+    lapply(
+      function(v) {
+        igraph::adjacent_vertices(graph_micro, v, mode = "in")[[1]] %>%
+          as.numeric
+      }
+    )
+
+  nodes_in_macro_with_outside_input <- seq_along(edges_to_micro_in_macro) %>%
+    Filter(function(v) {
+      length(intersect(edges_to_micro_in_macro[[v]], rest_of_nodes)) > 1
+    }, .) %>%
+    nodes_in_new_macro[[.]] %>%
+    as.numeric
+
+  tmp_type_nms <- names(macro_types)
+
+  macro_types_spatem1 <- append(macro_types, macro)
+  macro_types_spatem2 <- macro_types_spatem1
+
+  macro_types_spatem1 <- macro_types_spatem1 %>%
+    setNames(
+      c(tmp_type_nms, "spatem1")
+    )
+
+  macro_types_spatem2 <- macro_types_spatem2 %>%
+    setNames(
+      c(tmp_type_nms, "spatem2")
+    )
+
+  macro_intersect <- intersect(
+    nodes_in_macro_with_outside_input,
+    nodes_in_macro_with_outside_output
+  )
+
+  if (length(macro_intersect) > 0) {
+    graph_macro <- create_macro(graph_micro, mapping, macro_types_spatem2)
+  } else {
+    graph_macro <- create_macro(graph_micro, mapping, macro_types_spatem1)
+  }
+
+  list(
+    g_macro     = graph_macro,
+    macro_types = macro_types
+  )
 }

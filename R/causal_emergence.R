@@ -146,8 +146,7 @@ causal_emergence.igraph <- function(x,
   eff_current <- eff_micro
 
   checked_macros <- c()
-  macro_types <- list()
-  macro_types_tmp <- macro_types
+  macro_types <- c()
 
   current_mapping <- nodes_left %>%
     setNames(nodes_left)
@@ -156,7 +155,7 @@ causal_emergence.igraph <- function(x,
     node_i <- nodes_left[[shuffle[[i]]]]
     progress <- (i / length(shuffle)) * 100
 
-    sprintf('[%.1f%%] Checking node %d\n', progress, node_i) %>%
+    sprintf("[%.1f%%] Checking node %d\n", progress, node_i) %>%
       message
 
     macros_to_check <- update_blanket(blanket, checked_macros)[[node_i]]
@@ -187,10 +186,24 @@ causal_emergence.igraph <- function(x,
         set_macro(c(possible_macro, node_i), node_i_macro)
 
       if (types) {
+        select_values <- select_macro(
+          graph_micro,
+          node_i_macro,
+          possible_mapping,
+          macro_types
+        )
 
+        macro_types_tmp <- select_values$macro_types
+        graph_macro <- select_values$g_macro
       } else {
-        macro_types_tmp[[node_i_macro]] <- "spatem1"
-        graph_macro <- create_macro(graph_micro, possible_mapping, macro_types)
+        tmp_type_nms <- names(macro_types)
+        macro_types_tmp <- append(macro_types, node_i_macro)
+        macro_types_tmp <- macro_types_tmp %>%
+          setNames(
+            c(tmp_type_nms, "spatem1")
+          )
+
+        graph_macro <- create_macro(graph_micro, possible_mapping, macro_types_tmp)
       }
 
       graph_macro = check_network(graph_macro)
@@ -210,7 +223,7 @@ causal_emergence.igraph <- function(x,
         eff_current <- eff_macro
 
         sprintf(
-          'Successful macro grouping found.  New effective information: %.4f',
+          "Successful macro grouping found.  New effective information: %.4f",
           eff_current
         ) %>%
           message
