@@ -7,3 +7,6 @@
 ^cran-comments\.md$
 ^revdep$
 ^Makefile$
+^_pkgdown\.yml$
+^docs$
+^pkgdown$

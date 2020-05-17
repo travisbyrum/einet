@@ -1,0 +1,4 @@
+destination: docs
+
+home:
+    strip_header: true
