@@ -12,12 +12,12 @@ mb <- function(graph, nodes = igraph::V(graph)) {
   lapply(
     seq_along(nodes),
     function(i) {
-      nodes_out <- igraph::neighborhood(graph, nodes[[i]], order=1, mode="out")[[1]] %>%
+      nodes_out <- igraph::neighborhood(graph, nodes[[i]], order = 1, mode = "out")[[1]] %>%
         setdiff(nodes[[i]]) %>%
-        igraph::neighborhood(graph, ., order=1, mode="in") %>%
+        igraph::neighborhood(graph, ., order = 1, mode = "in") %>%
         unlist
 
-      igraph::neighborhood(graph, nodes[[i]], order=1, mode="in")[[1]] %>%
+      igraph::neighborhood(graph, nodes[[i]], order = 1, mode = "in")[[1]] %>%
         union(nodes_out) %>%
         setdiff(nodes[[i]])
     }
@@ -129,9 +129,6 @@ causal_emergence.igraph <- function(x,
   assertthat::assert_that(igraph::is.igraph(graph))
 
   graph_micro <- check_network(graph)
-
-  w_out <- graph_micro %>%
-    igraph::as_adj(attr = "weight")
 
   nodes_left <- igraph::V(graph_micro)
   blanket <- mb(graph_micro, nodes_left)
