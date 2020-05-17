@@ -1,4 +1,4 @@
-options(shiny.maxRequestSize = 100*1024^2)
+options(shiny.maxRequestSize = 100 * 1024^2)
 
 library(magrittr)
 library(entropy)
@@ -56,15 +56,15 @@ server <- function(input, output) {
   })
 
   causal <- reactive({
-    withProgress(
-      {
+
+    # Begin Exclude Linting
+    withProgress({
         df <- dataset() %>%
           causal_emergence
 
         incProgress(1)
-      },
-      message = 'Calculating causal emergence.'
-    )
+    }, message = "Calculating causal emergence.")
+    # End Exclude Linting
 
     df
   })
@@ -81,8 +81,11 @@ server <- function(input, output) {
       as.numeric %>%
       igraph::make_clusters(graph, .)
 
-    new_cols <- RColorBrewer::brewer.pal(n = wc$vcount, name = "RdBu")[igraph::membership(wc)]
-    par(mfrow=c(1,1))
+    new_cols <- RColorBrewer::brewer.pal(
+      n = wc$vcount, name = "RdBu"
+    )[igraph::membership(wc)]
+
+    par(mfrow = c(1, 1))
 
     output$ce <- renderPrint({
       ce
@@ -92,7 +95,7 @@ server <- function(input, output) {
       wc,
       graph,
       col             = new_cols,
-      mark.border     ="black",
+      mark.border     = "black",
       vertex.label    = NA,
       vertex.size     = 9,
       edge.arrow.size = .4
@@ -103,6 +106,6 @@ server <- function(input, output) {
     ei <- dataset() %>%
       effective_information
 
-    sprintf('Effective Information: %.2f', ei)
+    sprintf("Effective Information: %.2f", ei)
   })
 }

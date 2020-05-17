@@ -12,7 +12,12 @@ mb <- function(graph, nodes = igraph::V(graph)) {
   lapply(
     seq_along(nodes),
     function(i) {
-      nodes_out <- igraph::neighborhood(graph, nodes[[i]], order = 1, mode = "out")[[1]] %>%
+      nodes_out <- igraph::neighborhood(
+        graph,
+        nodes[[i]],
+        order = 1,
+        mode = "out"
+      )[[1]] %>%
         setdiff(nodes[[i]]) %>%
         igraph::neighborhood(graph, ., order = 1, mode = "in") %>%
         unlist
@@ -66,8 +71,9 @@ update_blanket <- function(blanket, removal = NULL) {
 
 #' Causal Emergence
 #'
-#' Given a microscale network, \code{G}, this function iteratively checks different
-#' coarse-grainings to see if it finds one with higher effective information.
+#' Given a microscale network, \code{G}, this function iteratively checks
+#' different coarse-grainings to see if it finds one with higher effective
+#' information.
 #'
 #' @param x igraph or matrix object.
 #' @param ... Span, and threshold parameters
@@ -200,11 +206,15 @@ causal_emergence.igraph <- function(x,
             c(tmp_type_nms, "spatem1")
           )
 
-        graph_macro <- create_macro(graph_micro, possible_mapping, macro_types_tmp)
+        graph_macro <- create_macro(
+          graph_micro,
+          possible_mapping,
+          macro_types_tmp
+        )
       }
 
-      graph_macro = check_network(graph_macro)
-      ei_macro = effective_information(graph_macro)
+      graph_macro <- check_network(graph_macro)
+      ei_macro <- effective_information(graph_macro)
       eff_macro <- effective_information.igraph(graph, effectiveness = TRUE)
 
       if (is.na(ei_macro)) {
@@ -231,7 +241,9 @@ causal_emergence.igraph <- function(x,
         checked_macros <- checked_macros %>%
           append(c(as.numeric(node_i), possible_mapping))
 
-        nodes_in_macro_i <- which(get_macro(macro_mapping) %in% node_i_macro) %>%
+        nodes_in_macro_i <- which(
+          get_macro(macro_mapping) %in% node_i_macro
+        ) %>%
           macro_mapping[.] %>%
           as.numeric
 

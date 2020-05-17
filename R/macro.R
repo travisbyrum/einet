@@ -11,23 +11,31 @@
 #'
 #' @return
 #' Directed igraph graph object corresponding to a coarse-grained network
-#' according to the \code{mapping} of micro nodes onto macro nodes, given by \code{mapping}.
+#' according to the \code{mapping} of micro nodes onto macro nodes, given by
+#' \code{mapping}.
 create_macro <- function(graph, mapping, macro_types, ...) {
-  assertthat::assert_that(length(mapping) > 0, msg = 'Macro mapping missing.')
-  assertthat::assert_that(!is.null(names(mapping)), msg = 'Macro mapping missing.')
+  assertthat::assert_that(
+    length(mapping) > 0,
+    msg = "Macro mapping missing."
+  )
+
+  assertthat::assert_that(
+    !is.null(names(mapping)),
+    msg = "Macro mapping missing."
+  )
 
   graph_micro <- check_network(graph)
   N_micro <- length(igraph::V(graph_micro))
 
   w_out <- graph_micro %>%
-    igraph::as_adj(attr = 'weight')
+    igraph::as_adj(attr = "weight")
 
   stationary_dist <- stationary(graph_micro)
 
-  nodes_micro <- mapping %>%
-    as.numeric %>%
-    unique %>%
-    sort
+  # nodes_micro <- mapping %>%
+  #   as.numeric %>%
+  #   unique %>%
+  #   sort
 
   nodes_macro <- mapping %>%
     get_macro %>%
@@ -46,25 +54,26 @@ create_macro <- function(graph, mapping, macro_types, ...) {
 
   nodes_in_macro_network <- append(nodes_macro, macro_id_spatem2)
 
-  N_macro <- length(nodes_in_macro_network)
-  n_TOO_BIG_MACRO = max(nodes_in_macro_network)
+  # N_macro <- length(nodes_in_macro_network)
+  n_TOO_BIG_MACRO <- max(nodes_in_macro_network)
 
   nodes_in_macro_network_mapping <- lapply(
     seq_along(nodes_in_macro_network),
-    function(i) list(key = nodes_in_macro_network[[i]], value = i )
+    function(i) list(key = nodes_in_macro_network[[i]], value = i)
   )
 
   TOO_BIG_MACRO <- matrix(0L, nrow = n_TOO_BIG_MACRO, ncol = n_TOO_BIG_MACRO)
 
   all_final_node_types <- lapply(
     nodes_in_macro_network,
-    function(i) list(key = i, value = ifelse(i < N_micro, 'micro', NA))
+    function(i) list(key = i, value = ifelse(i < N_micro, "micro", NA))
   ) %>%
     Filter(function(v) !is.na(v$value), .)
 
   for (key in keys(nodes_in_macro_network_mapping)) {
     if (!(key %in% keys(all_final_node_types))) {
-      all_final_node_types[[length(all_final_node_types) + 1]] <- list(key = key, value = 'spatem1')
+      all_final_node_types[[length(all_final_node_types) + 1]] <-
+        list(key = key, value = "spatem1")
     }
   }
 
@@ -75,10 +84,10 @@ create_macro <- function(graph, mapping, macro_types, ...) {
   for (i in seq_along(macro_types)) {
     value <- names(macro_types)[[i]]
 
-    if (!is.null(value) && !is.na(value) && value == 'spatem2') {
+    if (!is.null(value) && !is.na(value) && value == "spatem2") {
       mu_mu <- macro_id_spatem2[[spt2_ind_tmp]]
-      all_final_node_types[[mu_mu]]$value <- 'mu_mu'
-      macro_mumu_pairings[[i]] <- 'mu_mu'
+      all_final_node_types[[mu_mu]]$value <- "mu_mu"
+      macro_mumu_pairings[[i]] <- "mu_mu"
       spt2_ind_tmp <- spt2_ind_tmp + 1
     }
   }
@@ -92,14 +101,18 @@ create_macro <- function(graph, mapping, macro_types, ...) {
       .[[1]] %>%
       .$value
 
-    if (final_node_i_type == 'micro') {
-      out_indices <- igraph::incident(graph_micro, final_node_i, mode = "out") %>%
+    if (final_node_i_type == "micro") {
+      out_indices <- igraph::incident(
+        graph_micro,
+        final_node_i,
+        mode = "out"
+      ) %>%
         igraph::head_of(graph_micro, .) %>%
         as.numeric
 
       out_weights <- graph_micro %>%
         igraph::edge_attr(
-          'weight',
+          "weight",
           index = igraph::incident(graph_micro, final_node_i, mode = "out")
         )
 
@@ -109,7 +122,7 @@ create_macro <- function(graph, mapping, macro_types, ...) {
       W_i_out_final[w_ij] <- W_i_out_final[w_ij] + out_weights
 
       TOO_BIG_MACRO[final_node_i, ] <- W_i_out_final
-    } else if (final_node_i_type == 'spatial') {
+    } else if (final_node_i_type == "spatial") {
       micros_in_macro_i <- mapping[which(get_macro(mapping) %in% final_node_i)]
       macro_row_sum <- rep(0, NROW(w_out))
 
@@ -119,7 +132,9 @@ create_macro <- function(graph, mapping, macro_types, ...) {
       nodes_outside_macro_i <- nodes_in_macro_network %>%
         Filter(function(v) !(v %in% micros_in_macro_i) && i != final_node_i, .)
 
-      nodes_outside_macro_mic_index <- mapping[which(get_macro(mapping) %in% nodes_outside_macro_i)]
+      nodes_outside_macro_mic_index <- mapping[
+        which(get_macro(mapping) %in% nodes_outside_macro_i)
+        ]
 
       input_probs_to_macro <- t(w_out) %>%
         .[micros_in_macro_i, ] %>%
@@ -177,7 +192,7 @@ create_macro <- function(graph, mapping, macro_types, ...) {
           TOO_BIG_MACRO[final_node_i, ] <- W_i_out_final / sum(W_i_out_final)
         }
       }
-    } else if (final_node_i_type == 'spatem1') {
+    } else if (final_node_i_type == "spatem1") {
       micros_in_macro_i <- mapping[which(get_macro(mapping) %in% final_node_i)] %>%
         as.numeric
 
@@ -203,7 +218,9 @@ create_macro <- function(graph, mapping, macro_types, ...) {
         Filter(function(v) !(v %in% micros_in_macro_i) && v != final_node_i, .) %>%
         as.numeric
 
-      nodes_outside_macro_mic_index <- mapping[which(get_macro(mapping) %in% nodes_outside_macro_i)] %>%
+      nodes_outside_macro_mic_index <- mapping[
+        which(get_macro(mapping) %in% nodes_outside_macro_i)
+        ] %>%
         as.numeric
 
       if (any(c("dgCMatrix", "matrix") %in% class(Wout_macro_subgraph_weighted))) {
@@ -255,7 +272,7 @@ create_macro <- function(graph, mapping, macro_types, ...) {
         W_i_out_final[final_node_i] <- selfloop
         TOO_BIG_MACRO[final_node_i, ] <- W_i_out_final
       }
-    } else if (final_node_i_type == 'spatem2') {
+    } else if (final_node_i_type == "spatem2") {
       mu_mu_index <- macro_mumu_pairings[[final_node_i]]
       W_mu_out_final <- rep(0, n_TOO_BIG_MACRO)
       micros_in_macro_i <- mapping[which(get_macro(mapping) %in% final_node_i)] %>%
@@ -282,7 +299,9 @@ create_macro <- function(graph, mapping, macro_types, ...) {
       nodes_outside_macro_i <- nodes_in_macro_network %>%
         Filter(function(v) !(v %in% micros_in_macro_i) && i != final_node_i, .)
 
-      nodes_outside_macro_mic_index <- mapping[which(get_macro(mapping) %in% nodes_outside_macro_i)] %>%
+      nodes_outside_macro_mic_index <- mapping[
+        which(get_macro(mapping) %in% nodes_outside_macro_i)
+        ] %>%
         as.numeric
 
       if (any(c("dgCMatrix", "matrix") %in% class(Wout_macro_subgraph_weighted))) {
@@ -290,7 +309,9 @@ create_macro <- function(graph, mapping, macro_types, ...) {
           as.matrix %>%
           colSums
       } else {
-        Wout_macro_i_exitrates <- Wout_macro_subgraph_weighted[nodes_outside_macro_mic_index] %>%
+        Wout_macro_i_exitrates <- Wout_macro_subgraph_weighted[
+          nodes_outside_macro_mic_index
+          ] %>%
           as.matrix %>%
           t
       }
@@ -302,7 +323,7 @@ create_macro <- function(graph, mapping, macro_types, ...) {
         TOO_BIG_MACRO[final_node_i, ] <- W_i_out_final
         TOO_BIG_MACRO[as.numeric(mu_mu_index), ] <- W_mu_out_final
       } else {
-        out_macro_i_exitrates_norm <- Wout_macro_i_exitrates
+        Wout_macro_i_exitrates_norm <- Wout_macro_i_exitrates
 
         for (j in seq_along(Wout_macro_i_exitrates)) {
           wij <- Wout_macro_i_exitrates[[j]]
@@ -324,7 +345,8 @@ create_macro <- function(graph, mapping, macro_types, ...) {
 
         old_i <- out_indices[seq_along(new_indices)]
         wij_ind <- get_macro(mapping)[which(mapping %in% new_indices)]
-        W_i_out_final[wij_ind] <- W_i_out_final[wij_ind] + Wout_macro_i_exitrates_norm[old_i]
+        W_i_out_final[wij_ind] <- W_i_out_final[wij_ind] +
+          Wout_macro_i_exitrates_norm[old_i]
 
         W_i_out_final[as.numeric(mu_mu_index)] <- 1
 
@@ -339,7 +361,7 @@ create_macro <- function(graph, mapping, macro_types, ...) {
         TOO_BIG_MACRO[final_node_i, ] <- W_i_out_final
         TOO_BIG_MACRO[mu_mu_index, ] <- W_mu_out_final
       }
-    } else if (final_node_i_type == 'mu_mu') {
+    } else if (final_node_i_type == "mu_mu") {
       next
     }
   }
@@ -347,7 +369,7 @@ create_macro <- function(graph, mapping, macro_types, ...) {
   M <- TOO_BIG_MACRO[nodes_in_macro_network, ][, nodes_in_macro_network]
 
   M %>%
-    igraph::graph.adjacency(mode = 'directed', weighted = TRUE)
+    igraph::graph.adjacency(mode = "directed", weighted = TRUE)
 }
 
 #' select_macro
@@ -367,7 +389,7 @@ create_macro <- function(graph, mapping, macro_types, ...) {
 #' List with igraph graph object corresponding to a coarse-grained network
 #' and updated node types.
 select_macro <- function(graph, macro, mapping, macro_types, ...) {
-  assertthat::assert_that(length(macro) == 1, msg = 'Macro mapping missing.')
+  assertthat::assert_that(length(macro) == 1, msg = "Macro mapping missing.")
 
   graph_micro <- check_network(graph)
 
@@ -384,7 +406,7 @@ select_macro <- function(graph, macro, mapping, macro_types, ...) {
       }
     )
 
-  nodes_in_macro_with_outside_output <- seq_along(edges_from_micro_in_macro) %>%
+  nodes_with_outside_output <- seq_along(edges_from_micro_in_macro) %>%
     Filter(function(v) {
       length(intersect(edges_from_micro_in_macro[[v]], rest_of_nodes)) > 1
     }, .) %>%
@@ -400,7 +422,7 @@ select_macro <- function(graph, macro, mapping, macro_types, ...) {
       }
     )
 
-  nodes_in_macro_with_outside_input <- seq_along(edges_to_micro_in_macro) %>%
+  nodes_with_outside_input <- seq_along(edges_to_micro_in_macro) %>%
     Filter(function(v) {
       length(intersect(edges_to_micro_in_macro[[v]], rest_of_nodes)) > 1
     }, .) %>%
@@ -423,8 +445,8 @@ select_macro <- function(graph, macro, mapping, macro_types, ...) {
     )
 
   macro_intersect <- intersect(
-    nodes_in_macro_with_outside_input,
-    nodes_in_macro_with_outside_output
+    nodes_with_outside_input,
+    nodes_with_outside_output
   )
 
   if (length(macro_intersect) > 0) {

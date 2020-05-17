@@ -1,12 +1,13 @@
 #' Effective Information
 #'
-#' Calculates the effective information (EI) of a network, \eqn{G}, according to
-#' the definition provided in Klein & Hoel, 2019. Here, we subtract the
+#' Calculates the effective information (EI) of a network, \eqn{G}, according
+#' to the definition provided in Klein & Hoel, 2019. Here, we subtract the
 #' average entropies of the out-weights of nodes in a network, WOUT_average
 #' from the entropy of the average out-weights in the network, WIN_entropy.
 #'
 #' @param graph igraph or matrix object.
-#' @param effectiveness Logical indicating whether or not to return network effectiveness.
+#' @param effectiveness Logical indicating whether or not to return network
+#' effectiveness.
 #'
 #' @return Numeric value indicating the effective information of the network.
 #'
@@ -25,7 +26,8 @@
 #' effective_information(graph)
 #'
 #' @export
-effective_information <- function(graph, effectiveness = FALSE) UseMethod("effective_information")
+effective_information <- function(graph, effectiveness = FALSE)
+  UseMethod("effective_information")
 
 #' @export
 effective_information.matrix <- function(graph, effectiveness = FALSE) {
@@ -64,7 +66,7 @@ effective_information.igraph <- function(graph, effectiveness = FALSE) {
 
     assertthat::assert_that(
       !any(is.na(weights)),
-      msg = paste('missing weight values for node:', i)
+      msg = paste("missing weight values for node:", i)
     )
 
     w_out[i] <<- weights %>%

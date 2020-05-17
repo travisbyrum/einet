@@ -56,4 +56,3 @@ test_that("Causal Emergence is calculated with and_and", {
 
   expect_true(length(ce) > 0)
 })
-
