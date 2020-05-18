@@ -19,21 +19,21 @@
 #'     c(0.0, 0.0, 0.0, 1.0),
 #'     c(0.0, 0.0, 0.0, 0.0)
 #'   ),
-#'  nrow = 4
+#'   nrow = 4
 #' ) %>%
 #'   igraph::graph.adjacency(mode = "directed")
 #'
 #' effective_information(graph)
-#'
 #' @export
-effective_information <- function(graph, effectiveness = FALSE)
+effective_information <- function(graph, effectiveness = FALSE) {
   UseMethod("effective_information")
+}
 
 #' @export
 effective_information.matrix <- function(graph, effectiveness = FALSE) {
   assertthat::assert_that(is.matrix(graph))
 
-  graph <- igraph::graph.adjacency(graph,  mode = "directed")
+  graph <- igraph::graph.adjacency(graph, mode = "directed")
 
   effective_information.igraph(graph, effectiveness)
 }
@@ -48,7 +48,7 @@ effective_information.igraph <- function(graph, effectiveness = FALSE) {
 
   n_out <- out_edges %>%
     Filter(function(v) length(v) > 0, .) %>%
-    length
+    length()
 
   if (length(igraph::incident_edges) == 0) {
     return(0)
@@ -62,7 +62,7 @@ effective_information.igraph <- function(graph, effectiveness = FALSE) {
 
     weights <- edges %>%
       igraph::get.edge.attribute(graph, "weight", .) %>%
-      as.numeric
+      as.numeric()
 
     assertthat::assert_that(
       !any(is.na(weights)),
@@ -73,7 +73,7 @@ effective_information.igraph <- function(graph, effectiveness = FALSE) {
       entropy::entropy(unit = "log2")
 
     targets <- igraph::head_of(graph, edges)
-    w_in[targets] <<-  w_in[targets] + (weights / n_out)
+    w_in[targets] <<- w_in[targets] + (weights / n_out)
   }
 
   lapply(seq_along(nodes), set_win)

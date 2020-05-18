@@ -20,7 +20,7 @@ mb <- function(graph, nodes = igraph::V(graph)) {
       )[[1]] %>%
         setdiff(nodes[[i]]) %>%
         igraph::neighborhood(graph, ., order = 1, mode = "in") %>%
-        unlist
+        unlist()
 
       igraph::neighborhood(graph, nodes[[i]], order = 1, mode = "in")[[1]] %>%
         union(nodes_out) %>%
@@ -97,12 +97,11 @@ update_blanket <- function(blanket, removal = NULL) {
 #'     c(0.0, 0.0, 0.0, 1.0),
 #'     c(0.0, 0.0, 0.0, 0.0)
 #'   ),
-#'  nrow = 4
+#'   nrow = 4
 #' ) %>%
 #'   igraph::graph.adjacency(mode = "directed")
 #'
 #' causal_emergence(graph)
-#'
 #' @export
 causal_emergence <- function(x, ...) UseMethod("causal_emergence")
 
@@ -110,7 +109,7 @@ causal_emergence <- function(x, ...) UseMethod("causal_emergence")
 causal_emergence.matrix <- function(x, ...) {
   assertthat::assert_that(is.matrix(x))
 
-  graph <- igraph::graph.adjacency(x,  mode = "directed")
+  graph <- igraph::graph.adjacency(x, mode = "directed")
 
   causal_emergence.igraph(graph, ...)
 }
@@ -126,10 +125,10 @@ causal_emergence.list <- function(x, ...) {
 
 #' @export
 causal_emergence.igraph <- function(x,
-                                    span            = -1,
-                                    thresh          = 1e-4,
-                                    types           = FALSE,
-                                    max_iterations  = 1000,
+                                    span = -1,
+                                    thresh = 1e-4,
+                                    types = FALSE,
+                                    max_iterations = 1000,
                                     ...) {
   graph <- x
   assertthat::assert_that(igraph::is.igraph(graph))
@@ -140,7 +139,7 @@ causal_emergence.igraph <- function(x,
   blanket <- mb(graph_micro, nodes_left)
 
   span <- ifelse(span > 0, span, length(nodes_left))
-  shuffle <-  sample(seq_along(nodes_left), size = span)
+  shuffle <- sample(seq_along(nodes_left), size = span)
 
   ei_micro <- effective_information.igraph(graph_micro)
   eff_micro <- effective_information.igraph(graph_micro, effectiveness = TRUE)
@@ -159,10 +158,10 @@ causal_emergence.igraph <- function(x,
     progress <- (i / length(shuffle)) * 100
 
     sprintf("[%.1f%%] Checking node %d\n", progress, node_i) %>%
-      message
+      message()
 
     macros_to_check <- update_blanket(blanket, checked_macros)[[node_i]]
-    queue <- macros_to_check %>% sort
+    queue <- macros_to_check %>% sort()
 
     if (length(macros_to_check) < 1) {
       next
@@ -181,7 +180,7 @@ causal_emergence.igraph <- function(x,
       queue <- queue[sample(seq_along(queue))]
 
       possible_macro <- utils::tail(queue, 1) %>%
-        as.numeric
+        as.numeric()
 
       queue <- utils::head(queue, -1)
 
@@ -233,7 +232,7 @@ causal_emergence.igraph <- function(x,
           "Successful macro grouping found.  New effective information: %.4f",
           eff_current
         ) %>%
-          message
+          message()
 
         macro_mapping <- possible_mapping
         macro_types <- macro_types_tmp
@@ -245,11 +244,11 @@ causal_emergence.igraph <- function(x,
           get_macro(macro_mapping) %in% node_i_macro
         ) %>%
           macro_mapping[.] %>%
-          as.numeric
+          as.numeric()
 
         for (new_micro_i in seq_along(nodes_in_macro_i)) {
           neighbors_i_M <- mb(graph_micro, new_micro_i)[[1]] %>%
-            as.numeric
+            as.numeric()
 
           for (node_j_M in neighbors_i_M) {
             if (!(node_j_M %in% queue) && node_j_M != node_i) {
@@ -267,13 +266,13 @@ causal_emergence.igraph <- function(x,
 
   structure(
     list(
-      g_micro     = graph_micro,
-      g_macro     = create_macro(graph, current_mapping, macro_types) %>%
+      g_micro = graph_micro,
+      g_macro = create_macro(graph, current_mapping, macro_types) %>%
         check_network(),
-      mapping     = current_mapping,
-      ei_macro    = ei_current,
-      ei_micro    = ei_micro,
-      ce          = (eff_micro - eff_micro) / log2(igraph::vcount(graph_micro))
+      mapping = current_mapping,
+      ei_macro = ei_current,
+      ei_micro = ei_micro,
+      ce = (eff_micro - eff_micro) / log2(igraph::vcount(graph_micro))
     ),
     class = "CE"
   )

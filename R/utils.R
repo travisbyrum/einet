@@ -5,8 +5,9 @@
 
 ### is truthy -----------------------------------------------------------------
 is_truthy <- function(x) {
-  if (is.null(x))
+  if (is.null(x)) {
     return(FALSE)
+  }
 
   !identical(is.na(x), TRUE) &&
     !identical(length(x), 0L) &&
@@ -31,7 +32,7 @@ values <- function(x, key = "value") {
 ### macro values --------------------------------------------------------------
 get_macro <- function(mapping, micro_nodes = as.numeric(mapping)) {
   names(mapping)[which(mapping %in% micro_nodes)] %>%
-    as.numeric
+    as.numeric()
 }
 
 set_macro <- function(mapping, micro_nodes, value) {
@@ -43,6 +44,6 @@ set_macro <- function(mapping, micro_nodes, value) {
 ### max macro -----------------------------------------------------------------
 max_macro <- function(mapping) {
   names(mapping) %>%
-    as.numeric %>%
-    max
+    as.numeric() %>%
+    max()
 }

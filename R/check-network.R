@@ -29,8 +29,8 @@ check_network <- function(graph) {
         )
     } else if (length(out_edges_i) > 0) {
       non_zero <- Filter(function(oe) length(oe) > 0, out_edges_i) %>%
-        unlist %>%
-        as.numeric
+        unlist() %>%
+        as.numeric()
 
       weight_value <- 1 / length(out_edges_i)
 

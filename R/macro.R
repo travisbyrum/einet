@@ -38,9 +38,9 @@ create_macro <- function(graph, mapping, macro_types, ...) {
   #   sort
 
   nodes_macro <- mapping %>%
-    get_macro %>%
-    unique %>%
-    sort
+    get_macro() %>%
+    unique() %>%
+    sort()
 
   non_spatem2_max_index <- max(nodes_macro) + 1
   n_macros_spatem2 <- sum(names(macro_types) == "spatem2", na.rm = TRUE)
@@ -108,7 +108,7 @@ create_macro <- function(graph, mapping, macro_types, ...) {
         mode = "out"
       ) %>%
         igraph::head_of(graph_micro, .) %>%
-        as.numeric
+        as.numeric()
 
       out_weights <- graph_micro %>%
         igraph::edge_attr(
@@ -134,14 +134,14 @@ create_macro <- function(graph, mapping, macro_types, ...) {
 
       nodes_outside_macro_mic_index <- mapping[
         which(get_macro(mapping) %in% nodes_outside_macro_i)
-        ]
+      ]
 
       input_probs_to_macro <- t(w_out) %>%
         .[micros_in_macro_i, ] %>%
-        t
+        t()
 
       for (i in seq_along(macro_row_sum)) {
-        added <- Wout_macro_subgraph  %*%
+        added <- Wout_macro_subgraph %*%
           t(input_probs_to_macro[i])
 
         macro_row_sum <- macro_row_sum + added
@@ -155,7 +155,7 @@ create_macro <- function(graph, mapping, macro_types, ...) {
           .[micros_in_macro_i, ] %>%
           .[as.numeric(nodes_outside_macro_mic_index)] %>%
           Filter(function(v) v > 0, .) %>%
-          as.numeric
+          as.numeric()
 
         new_indices <- out_indices %>%
           lapply(
@@ -168,7 +168,7 @@ create_macro <- function(graph, mapping, macro_types, ...) {
             }
           ) %>%
           Filter(function(v) !is.na(v), .) %>%
-          as.numeric
+          as.numeric()
 
         for (j in seq_along(new_indices)) {
           value <- new_indices[[j]]
@@ -177,7 +177,7 @@ create_macro <- function(graph, mapping, macro_types, ...) {
           wij_out <- mapping %>%
             Filter(function(v) v$node == value, .) %>%
             sapply(function(v) v$node) %>%
-            as.numeric
+            as.numeric()
 
           acc <- W_i_out_final[wij_out]
           W_i_out_final[wij_out] <- W_i_out_final[wij_out] + acc
@@ -194,7 +194,7 @@ create_macro <- function(graph, mapping, macro_types, ...) {
       }
     } else if (final_node_i_type == "spatem1") {
       micros_in_macro_i <- mapping[which(get_macro(mapping) %in% final_node_i)] %>%
-        as.numeric
+        as.numeric()
 
       Wout_macro_subgraph <- w_out %>%
         .[micros_in_macro_i, ]
@@ -216,25 +216,25 @@ create_macro <- function(graph, mapping, macro_types, ...) {
 
       nodes_outside_macro_i <- nodes_in_macro_network %>%
         Filter(function(v) !(v %in% micros_in_macro_i) && v != final_node_i, .) %>%
-        as.numeric
+        as.numeric()
 
       nodes_outside_macro_mic_index <- mapping[
         which(get_macro(mapping) %in% nodes_outside_macro_i)
-        ] %>%
-        as.numeric
+      ] %>%
+        as.numeric()
 
       if (any(c("dgCMatrix", "matrix") %in% class(Wout_macro_subgraph_weighted))) {
         Wout_macro_i_exitrates <- Wout_macro_subgraph_weighted[, nodes_outside_macro_mic_index] %>%
-          as.matrix %>%
-          colSums
+          as.matrix() %>%
+          colSums()
       } else {
         Wout_macro_i_exitrates <- Wout_macro_subgraph_weighted[nodes_outside_macro_mic_index] %>%
-          as.matrix %>%
-          t
+          as.matrix() %>%
+          t()
       }
 
       Wout_macro_i_exitrates_sum <- Wout_macro_i_exitrates %>%
-        sum
+        sum()
 
       if (Wout_macro_i_exitrates_sum == 0) {
         W_i_out_final[final_node_i] <- 1
@@ -249,15 +249,15 @@ create_macro <- function(graph, mapping, macro_types, ...) {
 
         out_indices <- w_out %>%
           .[micros_in_macro_i, ] %>%
-          as.matrix %>%
-          colSums %>%
+          as.matrix() %>%
+          colSums() %>%
           .[as.numeric(nodes_outside_macro_mic_index)] %>%
           sapply(function(v) v > 0) %>%
-          which
+          which()
 
         new_indices <- out_indices %>%
           sapply(function(v) nodes_outside_macro_mic_index[v]) %>%
-          as.numeric
+          as.numeric()
 
         old_i <- out_indices[seq_along(new_indices)]
         wij_ind <- get_macro(mapping)[which(mapping %in% new_indices)]
@@ -276,7 +276,7 @@ create_macro <- function(graph, mapping, macro_types, ...) {
       mu_mu_index <- macro_mumu_pairings[[final_node_i]]
       W_mu_out_final <- rep(0, n_TOO_BIG_MACRO)
       micros_in_macro_i <- mapping[which(get_macro(mapping) %in% final_node_i)] %>%
-        as.numeric
+        as.numeric()
 
       Wout_macro_subgraph <- w_out %>%
         .[micros_in_macro_i, ]
@@ -301,19 +301,19 @@ create_macro <- function(graph, mapping, macro_types, ...) {
 
       nodes_outside_macro_mic_index <- mapping[
         which(get_macro(mapping) %in% nodes_outside_macro_i)
-        ] %>%
-        as.numeric
+      ] %>%
+        as.numeric()
 
       if (any(c("dgCMatrix", "matrix") %in% class(Wout_macro_subgraph_weighted))) {
         Wout_macro_i_exitrates <- Wout_macro_subgraph_weighted[, nodes_outside_macro_mic_index] %>%
-          as.matrix %>%
-          colSums
+          as.matrix() %>%
+          colSums()
       } else {
         Wout_macro_i_exitrates <- Wout_macro_subgraph_weighted[
           nodes_outside_macro_mic_index
-          ] %>%
-          as.matrix %>%
-          t
+        ] %>%
+          as.matrix() %>%
+          t()
       }
 
       if (Wout_macro_i_exitrates_sum == 0) {
@@ -333,15 +333,15 @@ create_macro <- function(graph, mapping, macro_types, ...) {
 
         out_indices <- w_out %>%
           .[micros_in_macro_i, ] %>%
-          as.matrix %>%
-          colSums %>%
+          as.matrix() %>%
+          colSums() %>%
           .[as.numeric(nodes_outside_macro_mic_index)] %>%
           sapply(function(v) v > 0) %>%
-          which
+          which()
 
         new_indices <- out_indices %>%
           sapply(function(v) nodes_outside_macro_mic_index[v]) %>%
-          as.numeric
+          as.numeric()
 
         old_i <- out_indices[seq_along(new_indices)]
         wij_ind <- get_macro(mapping)[which(mapping %in% new_indices)]
@@ -393,16 +393,16 @@ select_macro <- function(graph, macro, mapping, macro_types, ...) {
 
   graph_micro <- check_network(graph)
 
-  #micro nodes within macro
+  # micro nodes within macro
   nodes_in_new_macro <- mapping[sapply(names(mapping), function(x) x == macro)]
   rest_of_nodes <- mapping[sapply(names(mapping), function(x) x != macro)]
 
   edges_from_micro_in_macro <- nodes_in_new_macro %>%
-    as.numeric %>%
+    as.numeric() %>%
     lapply(
       function(v) {
         igraph::adjacent_vertices(graph_micro, v, mode = "out")[[1]] %>%
-          as.numeric
+          as.numeric()
       }
     )
 
@@ -411,14 +411,14 @@ select_macro <- function(graph, macro, mapping, macro_types, ...) {
       length(intersect(edges_from_micro_in_macro[[v]], rest_of_nodes)) > 1
     }, .) %>%
     nodes_in_new_macro[[.]] %>%
-    as.numeric
+    as.numeric()
 
   edges_to_micro_in_macro <- nodes_in_new_macro %>%
-    as.numeric %>%
+    as.numeric() %>%
     lapply(
       function(v) {
         igraph::adjacent_vertices(graph_micro, v, mode = "in")[[1]] %>%
-          as.numeric
+          as.numeric()
       }
     )
 
@@ -427,7 +427,7 @@ select_macro <- function(graph, macro, mapping, macro_types, ...) {
       length(intersect(edges_to_micro_in_macro[[v]], rest_of_nodes)) > 1
     }, .) %>%
     nodes_in_new_macro[[.]] %>%
-    as.numeric
+    as.numeric()
 
   tmp_type_nms <- names(macro_types)
 
