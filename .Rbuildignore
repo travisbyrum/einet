@@ -1,6 +1,7 @@
 ^.*\.Rproj$
 ^\.Rproj\.user$
 ^doc$
+^misc$
 ^Meta$
 ^\.circleci/config\.yml$
 ^bench$

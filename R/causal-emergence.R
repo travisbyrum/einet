@@ -150,7 +150,7 @@ causal_emergence.igraph <- function(x,
   checked_macros <- c()
   macro_types <- c()
 
-  current_mapping <- nodes_left %>%
+  macro_mapping <- nodes_left %>%
     setNames(nodes_left)
 
   for (i in seq_along(shuffle)) {
@@ -168,9 +168,9 @@ causal_emergence.igraph <- function(x,
     }
 
     node_i_macro <- ifelse(
-      get_macro(current_mapping, node_i) == node_i,
-      max_macro(current_mapping) + 1,
-      get_macro(current_mapping, node_i)
+      get_macro(macro_mapping, node_i) == node_i,
+      max_macro(macro_mapping) + 1,
+      get_macro(macro_mapping, node_i)
     )
 
     iteration <- 0
@@ -184,7 +184,7 @@ causal_emergence.igraph <- function(x,
 
       queue <- utils::head(queue, -1)
 
-      possible_mapping <- current_mapping %>%
+      possible_mapping <- macro_mapping %>%
         set_macro(c(possible_macro, node_i), node_i_macro)
 
       if (types) {
@@ -267,9 +267,9 @@ causal_emergence.igraph <- function(x,
   structure(
     list(
       g_micro = graph_micro,
-      g_macro = create_macro(graph, current_mapping, macro_types) %>%
+      g_macro = create_macro(graph, macro_mapping, macro_types) %>%
         check_network(),
-      mapping = current_mapping,
+      mapping = macro_mapping,
       ei_macro = ei_current,
       ei_micro = ei_micro,
       ce = (eff_micro - eff_micro) / log2(igraph::vcount(graph_micro))
