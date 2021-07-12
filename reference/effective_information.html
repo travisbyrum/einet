@@ -48,6 +48,8 @@ from the entropy of the average out-weights in the network, WIN_entropy." />
 
 
 
+
+
 <!-- mathjax -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script>
@@ -59,9 +61,15 @@ from the entropy of the average out-weights in the network, WIN_entropy." />
 
 
 
+  
+
+  
+
   </head>
 
   <body data-spy="scroll" data-target="#toc">
+    
+
     <div class="container template-reference-topic">
       <header>
       <div class="navbar navbar-default navbar-fixed-top" role="navigation">
@@ -82,12 +90,6 @@ from the entropy of the average out-weights in the network, WIN_entropy." />
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
-  <a href="../index.html">
-    <span class="fas fa fas fa-home fa-lg"></span>
-     
-  </a>
-</li>
-<li>
   <a href="../reference/index.html">Reference</a>
 </li>
 <li class="dropdown">
@@ -109,7 +111,7 @@ from the entropy of the average out-weights in the network, WIN_entropy." />
       <ul class="nav navbar-nav navbar-right">
         <li>
   <a href="https://github.com/travisbyrum/einet/">
-    <span class="fab fa fab fa-github fa-lg"></span>
+    <span class="fab fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -138,7 +140,7 @@ average entropies of the out-weights of nodes in a network, WOUT_average
 from the entropy of the average out-weights in the network, WIN_entropy.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>effective_information</span>(<span class='no'>graph</span>, <span class='kw'>effectiveness</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
+    <div class="ref-usage sourceCode"><pre class='sourceCode r'><code><span class='fu'>effective_information</span><span class='op'>(</span><span class='va'>graph</span>, effectiveness <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span></code></pre></div>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -158,19 +160,21 @@ from the entropy of the average out-weights in the network, WIN_entropy.</p>
     <p>Numeric value indicating the effective information of the network.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='no'>graph</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/matrix.html'>matrix</a></span>(
-  <span class='fu'><a href='https://rdrr.io/r/base/cbind.html'>cbind</a></span>(
-    <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>0.0</span>, <span class='fl'>1.0</span>, <span class='fl'>0.0</span>, <span class='fl'>0.0</span>),
-    <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>0.0</span>, <span class='fl'>0.0</span>, <span class='fl'>1.0</span>, <span class='fl'>0.0</span>),
-    <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>0.0</span>, <span class='fl'>0.0</span>, <span class='fl'>0.0</span>, <span class='fl'>1.0</span>),
-    <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>0.0</span>, <span class='fl'>0.0</span>, <span class='fl'>0.0</span>, <span class='fl'>0.0</span>)
-  ),
- <span class='kw'>nrow</span> <span class='kw'>=</span> <span class='fl'>4</span>
-) <span class='kw'>%&gt;%</span>
-  <span class='kw pkg'>igraph</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/igraph/man/graph_from_adjacency_matrix.html'>graph.adjacency</a></span>(<span class='kw'>mode</span> <span class='kw'>=</span> <span class='st'>"directed"</span>)
-
-<span class='fu'>effective_information</span>(<span class='no'>graph</span>)</div><div class='output co'>#&gt; [1] 1.584963</div><div class='input'>
-</div></pre>
+    <div class="ref-examples sourceCode"><pre class='sourceCode r'><code><span class='r-in'><span class='va'>graph</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/matrix.html'>matrix</a></span><span class='op'>(</span></span>
+<span class='r-in'>  <span class='fu'><a href='https://rdrr.io/r/base/cbind.html'>cbind</a></span><span class='op'>(</span></span>
+<span class='r-in'>    <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0.0</span>, <span class='fl'>1.0</span>, <span class='fl'>0.0</span>, <span class='fl'>0.0</span><span class='op'>)</span>,</span>
+<span class='r-in'>    <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0.0</span>, <span class='fl'>0.0</span>, <span class='fl'>1.0</span>, <span class='fl'>0.0</span><span class='op'>)</span>,</span>
+<span class='r-in'>    <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0.0</span>, <span class='fl'>0.0</span>, <span class='fl'>0.0</span>, <span class='fl'>1.0</span><span class='op'>)</span>,</span>
+<span class='r-in'>    <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0.0</span>, <span class='fl'>0.0</span>, <span class='fl'>0.0</span>, <span class='fl'>0.0</span><span class='op'>)</span></span>
+<span class='r-in'>  <span class='op'>)</span>,</span>
+<span class='r-in'> nrow <span class='op'>=</span> <span class='fl'>4</span></span>
+<span class='r-in'><span class='op'>)</span> <span class='op'><a href='pipe.html'>%&gt;%</a></span></span>
+<span class='r-in'>  <span class='fu'>igraph</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/pkg/igraph/man/graph_from_adjacency_matrix.html'>graph.adjacency</a></span><span class='op'>(</span>mode <span class='op'>=</span> <span class='st'>"directed"</span><span class='op'>)</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='fu'>effective_information</span><span class='op'>(</span><span class='va'>graph</span><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [1] 1.584963</span>
+<span class='r-in'></span>
+</code></pre></div>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
@@ -182,11 +186,11 @@ from the entropy of the average out-weights in the network, WIN_entropy.</p>
 
       <footer>
       <div class="copyright">
-  <p>Developed by Travis Byrum, Anshuman Swain, Brennan Klein, William Fagan.</p>
+  <p><p>Developed by Travis Byrum, Anshuman Swain, Brennan Klein, William Fagan.</p></p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.9000.</p>
+  <p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 1.6.1.9001.</p></p>
 </div>
 
       </footer>
@@ -194,6 +198,8 @@ from the entropy of the average out-weights in the network, WIN_entropy.</p>
 
   
 
+
+  
 
   </body>
 </html>
