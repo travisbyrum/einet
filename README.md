@@ -4,6 +4,7 @@
 
 [![CRAN status](https://www.r-pkg.org/badges/version/einet)](https://CRAN.R-project.org/package=einet)
 [![CircleCI build status](https://circleci.com/gh/travisbyrum/einet.svg?style=svg)](https://circleci.com/gh/travisbyrum/einet)
+[![R build status](https://github.com/travisbyrum/einet/workflows/R-CMD-check/badge.svg)](https://github.com/travisbyrum/einet/actions)
 <!-- badges: end -->
 
 # Effective information and causal emergence in R
