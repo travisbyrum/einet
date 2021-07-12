@@ -12,3 +12,5 @@
 ^docs$
 ^pkgdown$
 ^\.github$
+.env
+.lintr
