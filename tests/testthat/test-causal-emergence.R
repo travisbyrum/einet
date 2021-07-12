@@ -2,6 +2,14 @@ context("Testing Causal Emergence")
 
 MAX_ERROR <- 0.001
 
+with_seed <- function(seed, code) {
+  code <- substitute(code)
+  orig.seed <- .Random.seed
+  on.exit(.Random.seed <<- orig.seed)
+  set.seed(seed)
+  eval.parent(code)
+}
+
 ### Testing Markov Blanket ---------------------------------------------
 test_that("Markov Blanket is calculated correctly", {
   graph <- matrix(
@@ -55,4 +63,18 @@ test_that("Causal Emergence is calculated with and_and", {
   ce <- causal_emergence(and_and)
 
   expect_true(length(ce) > 0)
+})
+
+### Testing Causal Emergence Equivalence --------------------------------
+test_that("Causal Emergence has equivalent vertices and edges with same mapping", {
+  with_seed(123, {
+    complete <- igraph::make_full_graph(10, directed = FALSE, loops = FALSE)
+    complete_ce <- causal_emergence(complete)
+
+    equal_v <- all(igraph::V(complete_ce[["g_macro"]]) == igraph::V(complete_ce[["g_micro"]]))
+    equal_e <- all(igraph::E(complete_ce[["g_macro"]]) == igraph::E(complete_ce[["g_micro"]]))
+
+    expect_true(equal_v)
+    expect_true(equal_e)
+  })
 })

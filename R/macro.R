@@ -55,7 +55,7 @@ create_macro <- function(graph, mapping, macro_types, ...) {
   nodes_in_macro_network <- append(nodes_macro, macro_id_spatem2)
 
   # N_macro <- length(nodes_in_macro_network)
-  n_TOO_BIG_MACRO <- max(nodes_in_macro_network)
+  n_TOO_BIG_MACRO <- max(nodes_in_macro_network) + 1
 
   nodes_in_macro_network_mapping <- lapply(
     seq_along(nodes_in_macro_network),
@@ -66,7 +66,7 @@ create_macro <- function(graph, mapping, macro_types, ...) {
 
   all_final_node_types <- lapply(
     nodes_in_macro_network,
-    function(i) list(key = i, value = ifelse(i < N_micro, "micro", NA))
+    function(i) list(key = i, value = ifelse(i < (N_micro + 1), "micro", NA))
   ) %>%
     Filter(function(v) !is.na(v$value), .)
 

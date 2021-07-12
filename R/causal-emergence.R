@@ -214,7 +214,7 @@ causal_emergence.igraph <- function(x,
 
       graph_macro <- check_network(graph_macro)
       ei_macro <- effective_information(graph_macro)
-      eff_macro <- effective_information.igraph(graph, effectiveness = TRUE)
+      eff_macro <- effective_information.igraph(graph_macro, effectiveness = TRUE)
 
       if (is.na(ei_macro)) {
         effective_information(graph_macro)
