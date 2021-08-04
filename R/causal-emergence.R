@@ -272,7 +272,8 @@ causal_emergence.igraph <- function(x,
       mapping = macro_mapping,
       ei_macro = ei_current,
       ei_micro = ei_micro,
-      ce = (eff_micro - eff_micro) / log2(igraph::vcount(graph_micro))
+      effectiveness = ei_micro / log2(igraph::vcount(graph_micro)),
+      ce = (ei_current - ei_micro) / log2(igraph::vcount(graph_micro))
     ),
     class = "CE"
   )
