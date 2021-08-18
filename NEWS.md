@@ -1,4 +1,4 @@
-# einet (development version)
+# einet 1.0.0
 
 # einet 0.1.0
 
