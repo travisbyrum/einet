@@ -17,3 +17,15 @@ R code/package for calculating effective information in networks. This can then 
 ## Web App
 
 A [shiny application](https://einet.shinyapps.io/einet/) is available for demonstration purposes.
+
+## Basic usage in R
+
+`library(devtools)`
+`install_github("travisbyrum/einet") #installation`
+`library(igraph)`
+`library(einet)`
+`set.seed(123)`
+`karate_ce <- causal_emergence(karate) #using the karate club network provided within the package`
+`karate_ce #displays all the relevant information about effective information at micro and macro scales, the effectiveness (normalized effective information at micro-scale and teh causal emergence`
+
+
