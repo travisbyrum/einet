@@ -34,4 +34,5 @@ A [shiny application](https://einet.shinyapps.io/einet/) is available for demons
 
 `karate_ce #displays all the relevant information about effective information at micro and macro scales, the effectiveness (normalized effective information at micro-scale and teh causal emergence`
 
+For detailed information please visit https://github.com/jkbren/einet
 
