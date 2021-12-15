@@ -238,7 +238,7 @@ causal_emergence.igraph <- function(x,
         macro_types <- macro_types_tmp
 
         checked_macros <- checked_macros %>%
-          append(c(as.numeric(node_i), possible_mapping))
+          append(c(as.numeric(node_i), possible_macro))
 
         nodes_in_macro_i <- which(
           get_macro(macro_mapping) %in% node_i_macro
