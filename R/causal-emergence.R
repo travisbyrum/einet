@@ -160,7 +160,7 @@ causal_emergence.igraph <- function(x,
     sprintf("[%.1f%%] Checking node %d\n", progress, node_i) %>%
       message()
 
-    macros_to_check <- update_blanket(blanket, checked_macros)[[node_i]]
+    macros_to_check <- update_blanket(blanket, unique(checked_macros))[[node_i]]
     queue <- macros_to_check %>% sort()
 
     if (length(macros_to_check) < 1) {
