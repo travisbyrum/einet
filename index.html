@@ -34,7 +34,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">einet</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.0.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.0.0</span>
       </span>
     </div>
 
@@ -61,7 +61,7 @@
       </ul>
 <ul class="nav navbar-nav navbar-right">
 <li>
-  <a href="https://github.com/travisbyrum/einet/">
+  <a href="https://github.com/travisbyrum/einet/" class="external-link">
     <span class="fab fa-github fa-lg"></span>
      
   </a>
@@ -79,32 +79,33 @@
       </header><div class="row">
   <div class="contents col-md-9">
 
-<div id="einet" class="section level1">
+<div class="section level1">
 
 <!-- badges: start -->
 
 <!-- badges: end -->
 </div>
-<div id="effective-information-and-causal-emergence-in-r" class="section level1">
-<h1 class="hasAnchor">
-<a href="#effective-information-and-causal-emergence-in-r" class="anchor" aria-hidden="true"></a>Effective information and causal emergence in R</h1>
+<div class="section level1">
+<h1 id="effective-information-and-causal-emergence-in-r">Effective information and causal emergence in R<a class="anchor" aria-label="anchor" href="#effective-information-and-causal-emergence-in-r"></a>
+</h1>
 <p><strong>Team members:</strong> Travis Byrum, Anshuman Swain, Brennan Klein and William F Fagan</p>
 <p>R code/package for calculating effective information in networks. This can then be used to search for macroscale representations of a network such that the coarse grained representation has more effective information than the microscale, a phenomenon known as causal emergence (see Klein and Hoel, 2020).</p>
-<div id="web-app" class="section level2">
-<h2 class="hasAnchor">
-<a href="#web-app" class="anchor" aria-hidden="true"></a>Web App</h2>
+<div class="section level2">
+<h2 id="web-app">Web App<a class="anchor" aria-label="anchor" href="#web-app"></a>
+</h2>
 <p>A <a href="https://einet.shinyapps.io/einet/" class="external-link">shiny application</a> is available for demonstration purposes.</p>
 </div>
-<div id="basic-usage-in-r" class="section level2">
-<h2 class="hasAnchor">
-<a href="#basic-usage-in-r" class="anchor" aria-hidden="true"></a>Basic usage in R</h2>
-<p><code><a href="https://rdrr.io/r/base/library.html" class="external-link">library(devtools)</a></code></p>
+<div class="section level2">
+<h2 id="basic-usage-in-r">Basic usage in R<a class="anchor" aria-label="anchor" href="#basic-usage-in-r"></a>
+</h2>
+<p><code><a href="https://devtools.r-lib.org/" class="external-link">library(devtools)</a></code></p>
 <p><code>install_github("travisbyrum/einet") #installation</code></p>
 <p><code><a href="https://igraph.org" class="external-link">library(igraph)</a></code></p>
 <p><code><a href="https://github.com/travisbyrum/einet" class="external-link">library(einet)</a></code></p>
 <p><code>set.seed(123)</code></p>
 <p><code>karate_ce &lt;- causal_emergence(karate) #using the karate club network provided within the package</code></p>
 <p><code>karate_ce #displays all the relevant information about effective information at micro and macro scales, the effectiveness (normalized effective information at micro-scale and teh causal emergence</code></p>
+<p>For detailed information please visit <a href="https://github.com/jkbren/einet" class="external-link uri">https://github.com/jkbren/einet</a></p>
 </div>
 </div>
 
@@ -114,12 +115,9 @@
     <div class="links">
 <h2 data-toc-skip>Links</h2>
 <ul class="list-unstyled">
-<li>Download from CRAN at <br><a href="https://cloud.r-project.org/package=einet">https://​cloud.r-project.org/​package=einet</a>
-</li>
-<li>Browse source code at <br><a href="https://github.com/travisbyrum/einet/">https://​github.com/​travisbyrum/​einet/​</a>
-</li>
-<li>Report a bug at <br><a href="https://github.com/travisbyrum/einet/issues">https://​github.com/​travisbyrum/​einet/​issues</a>
-</li>
+<li><a href="https://cloud.r-project.org/package=einet" class="external-link">View on CRAN</a></li>
+<li><a href="https://github.com/travisbyrum/einet/" class="external-link">Browse source code</a></li>
+<li><a href="https://github.com/travisbyrum/einet/issues" class="external-link">Report a bug</a></li>
 </ul>
 </div>
 
@@ -127,11 +125,18 @@
 <h2 data-toc-skip>License</h2>
 <ul class="list-unstyled">
 <li>
-<a href="https://opensource.org/licenses/mit-license.php">MIT</a> + file <a href="LICENSE-text.html">LICENSE</a>
+<a href="https://opensource.org/licenses/mit-license.php" class="external-link">MIT</a> + file <a href="LICENSE-text.html">LICENSE</a>
 </li>
 </ul>
 </div>
 
+
+<div class="citation">
+<h2 data-toc-skip>Citation</h2>
+<ul class="list-unstyled">
+<li><a href="authors.html#citation">Citing einet</a></li>
+</ul>
+</div>
 
 <div class="developers">
 <h2 data-toc-skip>Developers</h2>
@@ -163,7 +168,7 @@
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 1.6.1.9001.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.1.9000.</p>
 </div>
 
       </footer>
