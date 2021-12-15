@@ -230,7 +230,7 @@ causal_emergence.igraph <- function(x,
 
         sprintf(
           "Successful macro grouping found.  New effective information: %.4f",
-          eff_current
+          ei_current
         ) %>%
           message()
 
